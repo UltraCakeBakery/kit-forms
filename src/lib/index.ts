@@ -12,91 +12,31 @@ import Form from './components/Form.svelte';
 import FormInput from './components/FormInput.svelte';
 import { regexes, messages, fieldNameToLabelConverter } from './utils';
 
-function parseConfiguration(config: Configuration) {
-	return Object.entries(config).map(([formName, formConfiguration]) => {
-		return {
-			name: formName,
-			method: formConfiguration.method ?? 'POST',
-			action: formConfiguration.action ?? `?/${formName}`,
-			id: formConfiguration.id,
-			component: formConfiguration.component ?? Form,
-			fields: Object.entries(formConfiguration.fields || {}).map(([name, fieldConfiguration]) => {
-				const field = {
-					name,
-					type: fieldConfiguration.type,
-					placeholder: fieldConfiguration.placeholder,
-					description: fieldConfiguration.description,
-					options: fieldConfiguration.options,
-					required: fieldConfiguration.required,
-					validate: fieldConfiguration.validate,
-					id: fieldConfiguration.id ?? `${formName}-${name}`,
-					component: fieldConfiguration.component ?? FormInput,
-					label:
-						fieldConfiguration.label === undefined
-							? fieldNameToLabelConverter(name)
-							: fieldConfiguration.label !== null
-							? fieldConfiguration.label
-							: null,
-					value: writable(fieldConfiguration.value ?? null),
-					localErrors: writable([...((fieldConfiguration.errors as unknown as string[]) || [])]),
-					serverErrors: writable([]),
-					messages: { ...messages, ...(fieldConfiguration.messages || {}) }
-				} as unknown as ParsedFormConfigurationField;
-
-				field.events = {
-					onInput: (event: any) => {
-						event?.preventDefault();
-						field.value.set(event.target.value);
-						field.serverErrors.set([]);
-
-						if (formConfiguration.errorsOnInput) writeFieldErrors(field, field.localErrors);
-						else field.localErrors.set([]);
-					},
-					onBlur: (event: any) => {
-						writeFieldErrors(field, field.localErrors);
-						field.serverErrors.set([]);
-					}
-				};
-
-				return field;
-			}),
-			buttons: Object.entries(formConfiguration.buttons || {}).map(
-				([name, buttonConfiguration]) => {
-					return {
-						name,
-						type: buttonConfiguration.type,
-						label:
-							buttonConfiguration.label === undefined
-								? fieldNameToLabelConverter(name)
-								: buttonConfiguration.label !== null
-								? buttonConfiguration.label
-								: null,
-						value: buttonConfiguration.value
-					} as unknown as ParsedFormConfigurationButton;
-				}
-			),
-			$$config: formConfiguration
-		};
-	}) as unknown as ParsedFormConfiguration[];
-}
-
 /**
- * Helper function that takes your config
+ * Use this function to create your forms. It takes an object where each property is a (form) Configuration.
+ * It returns an object where each property is a svelte component, ready for you to mount through <svelte:component this={}>
+ * in your svelte components.
  */
 export function create(configuration: Configuration) {
 	const parsedFormConfigurations = parseConfiguration(configuration);
 
-	// We use a proxy here to make the dev experience better for the end user.
-	// We basically created fancy getters, but also need to do some trickery to keep HMR support later down the line
 	return new Proxy(
 		{},
 		{
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			get(target: { [key: string | symbol]: any }, prop) {
-				if (prop === 'snapshot') return createSnapshotConfig(parsedFormConfigurations);
-				if (prop === 'createActions')
-					return (actions: Actions) => createActions(parsedFormConfigurations, actions);
+				// https://github.com/UltraCakeBakery/kit-forms/tree/main#step-23-mounting-your-forms
+				if (prop === 'snapshot')
+				{
+					return createSnapshotConfig(parsedFormConfigurations);
+				}
 
+				// https://github.com/UltraCakeBakery/kit-forms/tree/main#step-23-mounting-your-forms
+				if (prop === 'createActions')
+				{
+					return (actions: Actions) => createActions(parsedFormConfigurations, actions);
+				}
+
+				// Find the specific form the user is trying to access
 				const parsedFormConfiguration = parsedFormConfigurations.find((form) => form.name === prop);
 
 				if (!parsedFormConfiguration) return target[prop];
@@ -145,8 +85,94 @@ export function create(configuration: Configuration) {
 }
 
 /**
- * this function changes the value of a field. It updates all state (validations etc).
- * You should never call this function. It is just here for advanced users who know what they are doing.
+ * This function takes the users `forms.ts` configuration (the object passed to `create()`)
+ * and returns an array of parsed form configurations. During the parsing we prepare writable stores,
+ * apply default options and pre-format some other properties passed to the Form.svelte components.
+ */
+function parseConfiguration(config: Configuration) {
+	return Object.entries(config).map(([formName, formConfiguration]) => {
+		return {
+			name: formName,
+			method: formConfiguration.method ?? 'POST', // default to 'POST' method if none has been set
+			action: formConfiguration.action ?? `?/${formName}`, // set default form action url if none is generated (check generateActions function!)
+			id: formConfiguration.id,
+			component: formConfiguration.component ?? Form, // allow user to overwrite the Form component so they can bring their own
+			fields: Object.entries(formConfiguration.fields || {}).map(([name, fieldConfiguration]) => {
+				const field = {
+					name,
+					type: fieldConfiguration.type,
+					placeholder: fieldConfiguration.placeholder,
+					description: fieldConfiguration.description,
+					options: fieldConfiguration.options,
+					required: fieldConfiguration.required,
+					validate: fieldConfiguration.validate,
+					id: fieldConfiguration.id ?? `${formName}-${name}`, // default <input id=""> is equal to form name and name of the input.
+					component: fieldConfiguration.component ?? FormInput,
+					label:
+						fieldConfiguration.label === undefined
+							? fieldNameToLabelConverter(name) // if no label has been set by the user in the config, generate our own based on its name
+							: fieldConfiguration.label !== null // if label has not explicitly set to null, use whatever value they have set as the label
+							? fieldConfiguration.label
+							: null, // set no label (hide label) if explicitly passed `null` in config
+					value: writable(fieldConfiguration.value ?? null), // writable stores containing the value of the input
+					localErrors: writable([...((fieldConfiguration.errors as unknown as string[]) || [])]), // writable stores containing the realtime errors in the frontend (client)
+					serverErrors: writable([]), // writable stores containing the errors returned from the actions (server)
+					messages: { ...messages, ...(fieldConfiguration.messages || {}) }
+				} as unknown as ParsedFormConfigurationField; // we cast to unkown to hack around typescript limitations / bad typing due to missing types from svelte
+
+				// generate events you can use inside the Form component
+				field.events = {
+					onInput: (event: any) => { // Using `any` due to the lack of browser event types available here in our node dev env.
+						event?.preventDefault();
+						field.value.set(event.target.value); // write value to store
+						field.serverErrors.set([]); // set server errors to null and rely on validation happening on the client side
+
+						if (formConfiguration.errorsOnInput)
+						{
+							writeFieldErrors(field, field.localErrors); // if user has enabled that errors should display as you are typing, do so.
+						}
+						else
+						{
+							field.localErrors.set([]); // by default, we remove all errors when the user starts typing again.
+						}
+					},
+					onBlur: (event: any) => {
+						// when user clicks outside the input, or focuses on something else, remove server errors and validate input / show clientside errors
+						field.serverErrors.set([]); 
+						writeFieldErrors(field, field.localErrors);
+					}
+				};
+
+				return field;
+			}),
+			buttons: Object.entries(formConfiguration.buttons || {}).map(
+				([name, buttonConfiguration]) => {
+					// form buttons configuration. Here we do almost the same thing as for the fields above ^
+					return {
+						name,
+						type: buttonConfiguration.type,
+						label:
+							buttonConfiguration.label === undefined
+								? fieldNameToLabelConverter(name)
+								: buttonConfiguration.label !== null
+								? buttonConfiguration.label
+								: null,
+						value: buttonConfiguration.value
+					} as unknown as ParsedFormConfigurationButton;
+				}
+			),
+			$$config: formConfiguration
+		};
+	}) as unknown as ParsedFormConfiguration[];
+}
+
+
+/**
+ * This function is where validation happens.
+ * 
+ * 1. You pass the field object that holds the validations and other configurations
+ * 2. You pass the writable([]) we should set the list of errors in
+ * 3. optional: pass formData (used on serverside in actions) where we should get the value from instead.
  */
 export function writeFieldErrors(
 	field: ParsedFormConfigurationField,
@@ -191,9 +217,12 @@ export function writeFieldErrors(
 }
 
 /**
- * Helper function for creating magical actions for all your forms.
+ * Use this function in your `+page.js` or `+page.server.js` files.
+ * It wraps your action handlers inside a middleware that checks the forms fields against your
+ * configured validations. If anything is not valid, it will automatically return errors to your frontend.
+ * Anything you return from this function will be passed to the correct form.
  */
-export function createActions(
+export function createActions( // TODO: better documentation... but this is still unfinished. Jack will get back to this later.
 	parsedFormConfigurations: ParsedFormConfiguration[],
 	actions: { [form: string]: (event: RequestEvent, form: any) => any }
 ) {
@@ -241,7 +270,7 @@ export function createActions(
 }
 
 /**
- * Create snapshot config object for all your forms
+ * Generates a sveltekit snapshot configuration for all the passed forms.
  */
 export function createSnapshotConfig(parsedFormConfigurations: ParsedFormConfiguration[]) {
 	return undefined;
@@ -258,13 +287,15 @@ export function createSnapshotConfig(parsedFormConfigurations: ParsedFormConfigu
 /**
  * Helper function for generating <form ...> attributes.
  * usage: <form {...getFormElementAttributes($$props, form)}
+ * 
+ * See Form.svelte for example of its usage.
  */
 export function getFormElementAttributes(
 	props: { [x: string]: any },
 	parsedFormConfiguration: ParsedFormConfiguration
 ): object {
-	const name = props.name ?? parsedFormConfiguration.name ?? 'default';
-	const method = props.method ?? parsedFormConfiguration.method ?? 'POST';
+	const name = props.name ?? parsedFormConfiguration.name ?? 'default'; // defaults are already decided in the formConfiguration... but we check again just to be sure.
+	const method = props.method ?? parsedFormConfiguration.method ?? 'POST'; // defaults are already decided in the formConfiguration... but we check again just to be sure.
 	const action = props.action ?? parsedFormConfiguration.action ?? `?/${name}`;
 	const id = props.id ?? parsedFormConfiguration.id ?? undefined;
 
