@@ -56,9 +56,9 @@
 				{readonly}
 				{disabled}
 				{hidden}
-				on:input={registerEvents ? null : field.events.onInput}
-				on:blur={registerEvents ? null : field.events.onBlur}
-				on:focus={registerEvents ? null : field.events.onFocus}
+				on:input={registerEvents ? field.events.onInput : null}
+				on:blur={registerEvents ? field.events.onBlur : null}
+				on:focus={registerEvents ? field.events.onFocus : null}
 			>
 				{#each options as { label, value }}
 					<option {value}>{label}</option>
@@ -73,9 +73,9 @@
 				{disabled}
 				{hidden}
 				value={$value}
-				on:input={registerEvents ? null : field.events.onInput}
-				on:blur={registerEvents ? null : field.events.onBlur}
-				on:focus={registerEvents ? null : field.events.onFocus}
+				on:input={registerEvents ? field.events.onInput : null}
+				on:blur={registerEvents ? field.events.onBlur : null}
+				on:focus={registerEvents ? field.events.onFocus : null}
 			/>
 		{:else}
 			<input
@@ -94,9 +94,9 @@
 				{readonly}
 				{disabled}
 				{hidden}
-				on:input={registerEvents ? null : field.events.onInput}
-				on:blur={registerEvents ? null : field.events.onBlur}
-				on:focus={registerEvents ? null : field.events.onFocus}
+				on:input={registerEvents ? field.events.onInput : null}
+				on:blur={registerEvents ? field.events.onBlur : null}
+				on:focus={registerEvents ? field.events.onFocus : null}
 			/>
 		{/if}
 	</div>
