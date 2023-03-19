@@ -86,7 +86,8 @@ export default create({
 	passwordReset: {
 		fields: {
 			email: {
-				type: 'email',
+				type: 'textarea',
+				rows: 5,
 				autocomplete: false,
 				required: true,
 				validate: {

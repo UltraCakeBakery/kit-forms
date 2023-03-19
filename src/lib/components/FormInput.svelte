@@ -19,9 +19,10 @@
 	$: minlength = type === 'text' ? field.validate?.minLength : undefined;
 	$: maxlength = type === 'text' ? field.validate?.maxLength : undefined;
 	$: required = field.required;
+	$: rows = field.rows;
 	$: pattern = field.pattern ? field.pattern.toString() : null;
 	$: autocomplete = field.autocomplete;
-	$: errorElement = field.errorElement ?? 'div'
+	$: errorElement = field.errorElement ?? 'div';
 
 	$: localErrors = field.localErrors;
 	$: serverErrors = field.serverErrors;
@@ -33,14 +34,39 @@
 
 <div class="field {name}{type ? ` type-${type}` : ''}{errors?.length ? ' has-errors' : ''}">
 	<div class="label-wrapper">
-		{ #if typeof label === 'string' }
+		{#if typeof label === 'string'}
 			<label for={id}>
 				{label}
 			</label>
-		{ :else }
+		{:else}
 			<svelte:component this={label} {id} />
-		{ /if }
-		{#if type !== 'select'}
+		{/if}
+		{#if type === 'select'}
+			<select
+				{name}
+				{id}
+				value={$value}
+				{placeholder}
+				{required}
+				on:input={field.events.onInput}
+				on:blur={field.events.onBlur}
+				on:focus={field.events.onFocus}
+			>
+				{#each options as { label, value }}
+					<option {value}>{label}</option>
+				{/each}
+			</select>
+		{:else if type === 'textarea'}
+			<textarea
+				{name}
+				{id}
+				{rows}
+				value={$value}
+				on:input={field.events.onInput}
+				on:blur={field.events.onBlur}
+				on:focus={field.events.onFocus}
+			/>
+		{:else}
 			<input
 				{name}
 				{id}
@@ -54,15 +80,10 @@
 				{required}
 				{pattern}
 				{autocomplete}
-				on:blur={field.events.onBlur}
 				on:input={field.events.onInput}
+				on:blur={field.events.onBlur}
+				on:focus={field.events.onFocus}
 			/>
-		{:else}
-			<select {name} {id} value={$value} {placeholder} {required}>
-				{#each options as { label, value }}
-					<option {value}>{label}</option>
-				{/each}
-			</select>
 		{/if}
 	</div>
 	{#if errors?.length}

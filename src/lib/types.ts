@@ -1,4 +1,4 @@
-import type { SvelteComponent, SvelteComponentTyped } from 'svelte';
+import type { SvelteComponent } from 'svelte';
 import type { Readable, Writable } from 'svelte/store';
 
 export type HTMLInputTypeAttribute =
@@ -79,6 +79,7 @@ export interface FormConfigurationFieldBase {
 	options?: [{ value: string | number | boolean | null; label: string }];
 	errors?: Readable<string[]>;
 	required?: boolean;
+	rows?: number;
 	pattern?: RegExp;
 	autocomplete?: string;
 	id?: string;
@@ -102,6 +103,7 @@ export interface FormConfigurationFieldSelect extends FormConfigurationFieldBase
 }
 export interface FormConfigurationFieldTextarea extends FormConfigurationFieldBase {
 	type: 'textarea';
+	rows?: number;
 }
 export interface ParsedFormConfiguration {
 	name: string;
