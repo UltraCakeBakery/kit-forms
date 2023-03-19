@@ -9,8 +9,9 @@
 	$: type = field.type as string;
 	$: name = field.name;
 	$: value = field.value;
-	$: placeholder = field.placeholder;
+	$: id = field.id;
 	$: label = field.label;
+	$: placeholder = field.placeholder;
 	$: options = field.options || [];
 	$: description = field.description;
 	$: min = type === 'number' ? field.validate?.minLength : undefined;
@@ -18,7 +19,7 @@
 	$: minlength = type === 'text' ? field.validate?.minLength : undefined;
 	$: maxlength = type === 'text' ? field.validate?.maxLength : undefined;
 	$: required = field.required;
-	$: id = field.id;
+	$: errorElement = field.errorElement ?? 'div'
 
 	$: localErrors = field.localErrors;
 	$: serverErrors = field.serverErrors;
@@ -30,7 +31,13 @@
 
 <div class="field {name}{type ? ` type-${type}` : ''}{errors?.length ? ' has-errors' : ''}">
 	<div class="label-wrapper">
-		{#if label !== null}<label for={id}>{label}</label>{/if}
+		{#if label !== null}
+			{ #if typeof label === 'string' }
+				<label for={id}>{label}</label>
+			{ :else if label }
+				<svelte:component this={label} {id}></svelte:component>
+			{ /if }
+		{/if}
 		{#if type !== 'select'}
 			<input
 				{name}
@@ -55,13 +62,13 @@
 		{/if}
 	</div>
 	{#if errors?.length}
-		<div class="errors">
+		<svelte:element this={errorElement} class="errors">
 			{#each errors as error}
-				<div class="error">
+				<svelte:element this={errorElement === 'div' ? 'div' : 'li'} class="error">
 					{error}
-				</div>
+				</svelte:element>
 			{/each}
-		</div>
+		</svelte:element>
 	{:else if description}
 		<div class="description">{description}</div>
 	{/if}

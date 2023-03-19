@@ -1,10 +1,11 @@
 <script lang="ts">
-	import forms from './forms';
+	import forms from './forms'
+	import { page } from '$app/stores'
 
 	export const snapshot = forms.snapshot;
 </script>
 
-<svelte:component this={forms.login} />
+<svelte:component this={!$page.url.searchParams.has('password-reset') ? forms.login : forms.passwordReset} />
 
 <style>
 	:global(html, body) {

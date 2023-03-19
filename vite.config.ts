@@ -1,9 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import Unocss from 'unocss/vite'
 import { presetUno, presetIcons, transformerDirectives, transformerVariantGroup } from 'unocss'
-import FS from 'fs'
-
-FS.writeFileSync('./src/lib/lastDate.js', 'export default "' + new Date() + '"')
 
 /** @type {import('vite').UserConfig} */
 const config = {

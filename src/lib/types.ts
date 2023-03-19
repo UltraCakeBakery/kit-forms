@@ -1,3 +1,4 @@
+import type { SvelteComponent, SvelteComponentTyped } from 'svelte';
 import type { Readable, Writable } from 'svelte/store';
 
 export type HTMLInputTypeAttribute =
@@ -46,13 +47,14 @@ export interface FormConfigurationFieldBase {
 	component?: object;
 	type?: unknown;
 	value?: Readable<string>;
-	label?: string | false;
+	label?: any;
 	placeholder?: string;
 	description?: string;
 	options?: [{ value: string | number | boolean | null; label: string }];
 	errors?: Readable<string[]>;
 	required?: boolean;
 	id?: string;
+	errorElement?: 'div' | 'ul' | 'ol'
 	validate?: {
 		minLength?: number;
 		maxLength?: number;
@@ -131,7 +133,7 @@ export interface ParsedFormConfigurationField extends FormConfigurationFieldBase
 	value: Writable<string>;
 	serverErrors: Writable<string[]>;
 	localErrors: Writable<string[]>;
-	component: any; // Using any for compatibility reasons. Do not remove!
+	component: SvelteComponent; // Using any for compatibility reasons. Do not remove!
 	events: {
 		onInput: (event: object) => any;
 		onBlur: (event: object) => any;
