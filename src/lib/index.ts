@@ -14,12 +14,12 @@ import FormInput from './components/FormInput.svelte';
 import {
 	regexes,
 	messages,
+	consts,
 	fieldNameToLabelConverter,
 	countLowercaseChars,
 	countUppercaseChars,
 	countNumberChars
 } from './utils';
-import { lowercase, specials, uppercase } from './utils/regexes';
 
 /**
  * Use this function to create your forms. It takes an object where each property is a (form) Configuration.
