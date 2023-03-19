@@ -80,6 +80,7 @@ export interface FormConfigurationFieldBase {
 	errors?: Readable<string[]>;
 	required?: boolean;
 	readonly?: boolean;
+	disabled?: boolean;
 	rows?: number;
 	pattern?: RegExp;
 	autocomplete?: string | boolean;

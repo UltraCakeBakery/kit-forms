@@ -21,12 +21,15 @@
 	$: required = field.required;
 	$: rows = field.rows;
 	$: readonly = field.readonly;
+	$: disabled = field.disabled;
 	$: pattern = field.pattern ? field.pattern.toString() : null;
 	$: autocomplete = field.autocomplete;
 	$: errorElement = field.errorElement ?? 'div';
 
 	$: localErrors = field.localErrors;
 	$: serverErrors = field.serverErrors;
+
+	$: registerEvents = !disabled && !readonly;
 
 	field.serverErrors.set(get(page).form?.[form.name]?.[field.name] ?? []);
 
@@ -50,9 +53,9 @@
 				{placeholder}
 				{required}
 				{readonly}
-				on:input={readonly ? null : field.events.onInput}
-				on:blur={readonly ? null : field.events.onBlur}
-				on:focus={readonly ? null : field.events.onFocus}
+				on:input={registerEvents ? null : field.events.onInput}
+				on:blur={registerEvents ? null : field.events.onBlur}
+				on:focus={registerEvents ? null : field.events.onFocus}
 			>
 				{#each options as { label, value }}
 					<option {value}>{label}</option>
@@ -65,9 +68,9 @@
 				{rows}
 				{readonly}
 				value={$value}
-				on:input={readonly ? null : field.events.onInput}
-				on:blur={readonly ? null : field.events.onBlur}
-				on:focus={readonly ? null : field.events.onFocus}
+				on:input={registerEvents ? null : field.events.onInput}
+				on:blur={registerEvents ? null : field.events.onBlur}
+				on:focus={registerEvents ? null : field.events.onFocus}
 			/>
 		{:else}
 			<input
@@ -84,9 +87,10 @@
 				{pattern}
 				{autocomplete}
 				{readonly}
-				on:input={readonly ? null : field.events.onInput}
-				on:blur={readonly ? null : field.events.onBlur}
-				on:focus={readonly ? null : field.events.onFocus}
+				{disabled}
+				on:input={registerEvents ? null : field.events.onInput}
+				on:blur={registerEvents ? null : field.events.onBlur}
+				on:focus={registerEvents ? null : field.events.onFocus}
 			/>
 		{/if}
 	</div>
