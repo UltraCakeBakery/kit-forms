@@ -361,18 +361,23 @@ export function createActions( // TODO: better documentation... but this is stil
 }
 
 /**
- * Generates a sveltekit snapshot configuration for all the passed forms.
+ * Generates a SvelteKit snapshot config for ALL the forms
  */
 export function createSnapshotConfig(parsedFormConfigurations: ParsedFormConfiguration[]) {
 	return undefined;
+	// TODO: unfinished experimental stuff
+	// const forms = parsedFormConfigurations.map(({ name, fields }) => fields);
+	// const fieldValues = parsedFormConfigurations;
 	// return {
-	//     capture: () => {
-	//         // TODO: store forms and fields that are not disabled
-	//     },
-	//     restore: ( value: string ) => {
-	//         // TODO: write fields to form
-	//     }
-	// }
+	// 	capture: () => {
+	// 		return fieldValues.map((value) => get(value));
+	// 	},
+	// 	restore: (value) => {
+	// 		fieldValues.forEach((fieldValue, fieldValueIndex) =>
+	// 			fieldValues[fieldValueIndex].set(value[fieldValueIndex])
+	// 		);
+	// 	}
+	// };
 }
 
 /**
