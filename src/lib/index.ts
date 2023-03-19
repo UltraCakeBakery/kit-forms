@@ -21,6 +21,7 @@ import {
 	countUppercaseChars,
 	countNumberChars
 } from './utils';
+import { browser } from '$app/environment';
 
 /**
  * Use this function to create your forms. It takes an object where each property is a (form) Configuration.
@@ -210,90 +211,108 @@ export function writeFieldErrors(
 	errors: any,
 	formData: FormData | undefined = undefined
 ) {
-	if (!field.validate) return true;
-
 	const _errors = [] as string[];
 	const value = String(formData ? formData.get(field.name) : get(field.value));
 
-	for (const validation of Object.keys(field.validate) as Array<keyof ValidationRules>) {
-		let isValid = true;
-		let condition;
-		switch (validation) {
-			case 'isEmail':
-				condition = field.validate[validation];
-				isValid = condition === true && regexes.email.test(value);
-				break;
-			case 'hasLength':
-				isValid = !value?.length;
-				break;
-			case 'minLength':
-				condition = field.validate[validation] ?? 0;
-				isValid = value?.length > condition;
-				break;
-			case 'maxLength':
-				condition = field.validate[validation] ?? Infinity;
-				isValid = value?.length < condition;
-				break;
-			case 'hasLowercase':
-				isValid = regexes.lowercase.test(value);
-				break;
-			case 'minLowercase':
-				condition = field.validate[validation] ?? 0;
-				isValid = countLowercaseChars(value) >= condition;
-				break;
-			case 'maxLowercase':
-				condition = field.validate[validation] ?? Infinity;
-				isValid = countLowercaseChars(value) <= condition;
-				break;
-			case 'hasUppercase':
-				isValid = regexes.uppercase.test(value);
-				break;
-			case 'minUppercase':
-				condition = field.validate[validation] ?? 0;
-				isValid = countUppercaseChars(value) >= condition;
-				break;
-			case 'maxUppercase':
-				condition = field.validate[validation] ?? Infinity;
-				isValid = countUppercaseChars(value) <= condition;
-				break;
-			case 'hasNumbers':
-				isValid = regexes.numbers.test(value);
-				break;
-			case 'minNumbers':
-				condition = field.validate[validation] ?? 0;
-				isValid = countNumberChars(value) >= condition;
-				break;
-			case 'maxNumbers':
-				condition = field.validate[validation] ?? Infinity;
-				isValid = countNumberChars(value) <= condition;
-				break;
-			case 'hasSpecial':
-				isValid = regexes.special.test(value);
-				break;
-			case 'minSpecial':
-				condition = field.validate[validation] ?? 0;
-				isValid =
-					Array.from(value).filter((char) => consts.specials.includes(char)).length >= condition;
-				break;
-			case 'maxSpecial':
-				condition = field.validate[validation] ?? Infinity;
-				isValid =
-					Array.from(value).filter((char) => consts.specials.includes(char)).length <= condition;
-				break;
-			case 'isUrl':
-				isValid = regexes.url.test(value);
-				break;
-			case 'isSecureUrl':
-				isValid = regexes.secureUrl.test(value);
-				break;
-			default:
-				break;
+	if (field.validate) {
+		for (const validation of Object.keys(field.validate) as Array<keyof ValidationRules>) {
+			let isValid = true;
+			let condition;
+			switch (validation) {
+				case 'isEmail':
+					condition = field.validate[validation];
+					isValid = condition === true && regexes.email.test(value);
+					break;
+				case 'hasLength':
+					isValid = !value?.length;
+					break;
+				case 'minLength':
+					condition = field.validate[validation] ?? 0;
+					isValid = value?.length > condition;
+					break;
+				case 'maxLength':
+					condition = field.validate[validation] ?? Infinity;
+					isValid = value?.length < condition;
+					break;
+				case 'hasLowercase':
+					isValid = regexes.lowercase.test(value);
+					break;
+				case 'minLowercase':
+					condition = field.validate[validation] ?? 0;
+					isValid = countLowercaseChars(value) >= condition;
+					break;
+				case 'maxLowercase':
+					condition = field.validate[validation] ?? Infinity;
+					isValid = countLowercaseChars(value) <= condition;
+					break;
+				case 'hasUppercase':
+					isValid = regexes.uppercase.test(value);
+					break;
+				case 'minUppercase':
+					condition = field.validate[validation] ?? 0;
+					isValid = countUppercaseChars(value) >= condition;
+					break;
+				case 'maxUppercase':
+					condition = field.validate[validation] ?? Infinity;
+					isValid = countUppercaseChars(value) <= condition;
+					break;
+				case 'hasNumbers':
+					isValid = regexes.numbers.test(value);
+					break;
+				case 'minNumbers':
+					condition = field.validate[validation] ?? 0;
+					isValid = countNumberChars(value) >= condition;
+					break;
+				case 'maxNumbers':
+					condition = field.validate[validation] ?? Infinity;
+					isValid = countNumberChars(value) <= condition;
+					break;
+				case 'hasSpecial':
+					isValid = regexes.special.test(value);
+					break;
+				case 'minSpecial':
+					condition = field.validate[validation] ?? 0;
+					isValid =
+						Array.from(value).filter((char) => consts.specials.includes(char)).length >= condition;
+					break;
+				case 'maxSpecial':
+					condition = field.validate[validation] ?? Infinity;
+					isValid =
+						Array.from(value).filter((char) => consts.specials.includes(char)).length <= condition;
+					break;
+				case 'isUrl':
+					isValid = regexes.url.test(value);
+					break;
+				case 'isSecureUrl':
+					isValid = regexes.secureUrl.test(value);
+					break;
+				default:
+					break;
+			}
+
+			if (!isValid) {
+				_errors.push(
+					field.messages?.[validation]?.replace(/%required_amount%/g, String(condition)) ||
+						'Missing error message for ' + validation
+				); // || defaultMessages.get(validation, condition, field )
+			}
 		}
-		!isValid &&
-			_errors.push(
-				field.messages?.[validation]?.replace(/%required_amount%/g, String(condition)) ||
-					'Missing error message for ' + validation
-			); // || defaultMessages.get(validation, condition, field )
+	}
+
+	// We use this to check if we are in the actions handler.
+	// This will one day cause an issue for an edge case user, but i dont know what else to check against for now.
+	if (!browser) {
+		if (field.required && (value === null || !value.length)) {
+			_errors.push('This field is required, but it is missing.');
+		}
+
+		if (
+			field.type === 'select' &&
+			field.required === true &&
+			!field.options?.some((option) => option.value == value)
+		) {
+			_errors.push('Value is not one of the available options');
+		}
 	}
 
 	errors.set(_errors);

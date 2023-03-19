@@ -8,16 +8,15 @@ export default create({
 			email: {
 				type: 'email',
 				placeholder: 'john.doe@example.com',
-				validate: {
-					isEmail: true
-				}
+				required: true
 			},
 			password: {
 				type: 'password',
 				placeholder: '************',
+				required: true,
 				label: PasswordLabel,
 				validate: {
-					minLength: 5
+					// minLength: 5
 					// maxLength: 255,
 					// hasLength: true,
 					// hasUppercase: true,
@@ -28,6 +27,7 @@ export default create({
 			},
 			test: {
 				type: 'select',
+				required: true,
 				options: [{ label: 'Test', value: 123 }]
 			},
 			rememberMe: {
