@@ -32,7 +32,7 @@
 
 	$: registerEvents = !disabled && !readonly;
 
-	field.serverErrors.set(get(page).form?.[form.name]?.[field.name] ?? []);
+	field.serverErrors.set(get(page).form?.__KIT_FORMS__?.[form.name]?.[field.name] ?? []);
 
 	$: errors = [...$localErrors, ...$serverErrors];
 </script>

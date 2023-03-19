@@ -17,31 +17,16 @@ export default create({
 				placeholder: '************',
 				label: PasswordLabel,
 				validate: {
-					minLength: 5,
-					maxLength: 255,
-					hasLength: true,
-					minUppercase: 0,
-					maxUppercase: 10,
-					hasUppercase: true,
-					minLowercase: 0,
-					maxLowercase: 10,
-					hasLowercase: true,
-					minNumbers: 0,
-					maxNumbers: 10,
-					hasNumbers: true,
-					minSpecial: 0,
-					maxSpecial: 10,
-					hasSpecial: true,
-					minRegexMatches: 0,
-					maxRegexMatches: 10,
-					hasRegexMatch: true
-				},
-				messages: {
-					minLength: 'Your password may not be smaller than %required_amount% characters',
-					maxLength: 'Your password may not be smaller than %required_amount% characters'
+					minLength: 5
+					// maxLength: 255,
+					// hasLength: true,
+					// hasUppercase: true,
+					// hasLowercase: true,
+					// hasNumbers: true,
+					// hasSpecial: true
 				}
 			},
-			'remember-me': {
+			rememberMe: {
 				type: 'checkbox'
 			}
 		},
