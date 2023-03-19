@@ -110,6 +110,7 @@ function parseConfiguration(config: Configuration) {
 					options: fieldConfiguration.options,
 					required: fieldConfiguration.required,
 					rows: fieldConfiguration.rows,
+					readonly: fieldConfiguration.readonly,
 					pattern: fieldConfiguration.pattern
 						? fieldConfiguration.pattern.toString().split('/')[1]
 						: null,

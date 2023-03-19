@@ -7,6 +7,8 @@ export default create({
 		fields: {
 			email: {
 				type: 'email',
+				readonly: true,
+				disabled: true,
 				placeholder: 'john.doe@example.com',
 				validate: {
 					isEmail: true

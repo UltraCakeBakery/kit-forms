@@ -20,6 +20,7 @@
 	$: maxlength = type === 'text' ? field.validate?.maxLength : undefined;
 	$: required = field.required;
 	$: rows = field.rows;
+	$: readonly = field.readonly;
 	$: pattern = field.pattern ? field.pattern.toString() : null;
 	$: autocomplete = field.autocomplete;
 	$: errorElement = field.errorElement ?? 'div';
@@ -48,9 +49,10 @@
 				value={$value}
 				{placeholder}
 				{required}
-				on:input={field.events.onInput}
-				on:blur={field.events.onBlur}
-				on:focus={field.events.onFocus}
+				{readonly}
+				on:input={readonly ? null : field.events.onInput}
+				on:blur={readonly ? null : field.events.onBlur}
+				on:focus={readonly ? null : field.events.onFocus}
 			>
 				{#each options as { label, value }}
 					<option {value}>{label}</option>
@@ -61,10 +63,11 @@
 				{name}
 				{id}
 				{rows}
+				{readonly}
 				value={$value}
-				on:input={field.events.onInput}
-				on:blur={field.events.onBlur}
-				on:focus={field.events.onFocus}
+				on:input={readonly ? null : field.events.onInput}
+				on:blur={readonly ? null : field.events.onBlur}
+				on:focus={readonly ? null : field.events.onFocus}
 			/>
 		{:else}
 			<input
@@ -80,9 +83,10 @@
 				{required}
 				{pattern}
 				{autocomplete}
-				on:input={field.events.onInput}
-				on:blur={field.events.onBlur}
-				on:focus={field.events.onFocus}
+				{readonly}
+				on:input={readonly ? null : field.events.onInput}
+				on:blur={readonly ? null : field.events.onBlur}
+				on:focus={readonly ? null : field.events.onFocus}
 			/>
 		{/if}
 	</div>
