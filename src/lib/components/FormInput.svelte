@@ -20,6 +20,7 @@
 	$: maxlength = type === 'text' ? field.validate?.maxLength : undefined;
 	$: required = field.required;
 	$: pattern = field.pattern ? field.pattern.toString() : null;
+	$: autocomplete = field.autocomplete;
 	$: errorElement = field.errorElement ?? 'div'
 
 	$: localErrors = field.localErrors;
@@ -52,6 +53,7 @@
 				{placeholder}
 				{required}
 				{pattern}
+				{autocomplete}
 				on:blur={field.events.onBlur}
 				on:input={field.events.onInput}
 			/>

@@ -54,6 +54,7 @@ export interface FormConfigurationFieldBase {
 	errors?: Readable<string[]>;
 	required?: boolean;
 	pattern?: RegExp;
+	autocomplete?: string;
 	id?: string;
 	errorElement?: 'div' | 'ul' | 'ol'
 	validate?: {

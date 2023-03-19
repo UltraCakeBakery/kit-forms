@@ -88,6 +88,7 @@ export default create(
 			fields: {
 				email: {
 					type: "email",
+					autocomplete: false,
 					required: true,
 				},
 				resetToken: {

@@ -104,6 +104,7 @@ function parseConfiguration(config: Configuration) {
 					required: fieldConfiguration.required,
 					pattern: fieldConfiguration.pattern ? fieldConfiguration.pattern.toString().split('/')[1] : null,
 					validate: fieldConfiguration.validate,
+					autocomplete: [false, null].includes( fieldConfiguration.autocomplete ) ? 'off' : fieldConfiguration.autocomplete,
 					id: fieldConfiguration.id ?? `${formName}-${name}`, // default <input id=""> is equal to form name and name of the input.
 					component: fieldConfiguration.component ?? FormInput,
 					label:
