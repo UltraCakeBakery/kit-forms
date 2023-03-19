@@ -303,7 +303,7 @@ export function writeFieldErrors(
 	// This will one day cause an issue for an edge case user, but i dont know what else to check against for now.
 	if (!browser) {
 		if (field.required && (value === null || !value.length)) {
-			_errors.push('This field is required, but it is missing.');
+			_errors.push('This field is required, but it is missing from the form submission.');
 		}
 
 		if (
@@ -311,7 +311,11 @@ export function writeFieldErrors(
 			field.required === true &&
 			!field.options?.some((option) => option.value == value)
 		) {
-			_errors.push('Value is not one of the available options');
+			_errors.push('Submitted value is not one of the available options.');
+		}
+
+		if (field.pattern && !new RegExp(field.pattern).test(value)) {
+			_errors.push('Submitted value does not match required pattern.');
 		}
 	}
 
