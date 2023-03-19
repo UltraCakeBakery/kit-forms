@@ -43,6 +43,32 @@ export type FormConfigurationField =
 	| FormConfigurationFieldSelect
 	| FormConfigurationFieldTextarea;
 
+export interface ValidationRules {
+	minLength: number;
+	maxLength: number;
+	hasLength: boolean;
+	maxUppercase: number;
+	minUppercase: number;
+	hasUppercase: boolean;
+	minLowercase: number;
+	maxLowercase: number;
+	hasLowercase: boolean;
+	minNumbers: number;
+	maxNumbers: number;
+	hasNumbers: boolean;
+	minSpecial: number;
+	maxSpecial: number;
+	hasSpecial: boolean;
+	regex: string | RegExp;
+	minRegexMatches: number;
+	maxRegexMatches: number;
+	hasRegexMatch: boolean;
+	isEmail: boolean;
+	sameAs: string;
+	isUrl: string;
+	isSecureUrl: string;
+}
+
 export interface FormConfigurationFieldBase {
 	component?: object;
 	type?: unknown;
@@ -56,53 +82,9 @@ export interface FormConfigurationFieldBase {
 	pattern?: RegExp;
 	autocomplete?: string;
 	id?: string;
-	errorElement?: 'div' | 'ul' | 'ol'
-	validate?: {
-		minLength?: number;
-		maxLength?: number;
-		hasLength?: boolean;
-		minUppercase?: number;
-		maxUppercase?: number;
-		hasUppercase?: boolean;
-		minLowercase?: number;
-		maxLowercase?: number;
-		hasLowercase?: boolean;
-		minNumbers?: number;
-		maxNumbers?: number;
-		hasNumbers?: boolean;
-		minSpecial?: number;
-		maxSpecial?: number;
-		hasSpecial?: boolean;
-		regex?: string | RegExp;
-		minRegexMatches?: number;
-		maxRegexMatches?: number;
-		hasRegexMatch?: boolean;
-		isEmail?: boolean;
-		sameAs?: string;
-	};
-	messages?: {
-		minLength?: string;
-		maxLength?: string;
-		hasLength?: string;
-		minUppercase?: string;
-		maxUppercase?: string;
-		hasUppercase?: string;
-		minLowercase?: string;
-		maxLowercase?: string;
-		hasLowercase?: string;
-		minNumbers?: string;
-		maxNumbers?: string;
-		hasNumbers?: string;
-		minSpecial?: string;
-		maxSpecial?: string;
-		hasSpecial?: string;
-		regex?: string;
-		minRegexMatches?: string;
-		maxRegexMatches?: string;
-		hasRegexMatch?: string;
-		isEmail?: string;
-		sameAs?: string;
-	};
+	errorElement?: 'div' | 'ul' | 'ol';
+	validate?: Partial<ValidationRules>;
+	messages?: Partial<Record<keyof ValidationRules, string>>;
 }
 
 export interface FormConfigurationButton {
