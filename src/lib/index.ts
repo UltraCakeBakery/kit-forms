@@ -3,7 +3,6 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 import type {
 	Configuration,
-	HTMLInputTypeAttribute,
 	ParsedFormConfiguration,
 	ParsedFormConfigurationButton,
 	ParsedFormConfigurationField,
@@ -347,7 +346,7 @@ export function createActions( // TODO: better documentation... but this is stil
 						)
 					});
 				} catch (error) {
-					if (error instanceof fieldErrors) {
+					if (error instanceof thrownFieldErrors) {
 						return { __KIT_FORMS__: { [form.name]: { [error.field]: error.errors } } };
 					}
 
@@ -398,16 +397,21 @@ export function getFormElementAttributes(
 	return { name, method, action, id, class: props.class };
 }
 
-export class fieldErrors {
-	protected field: string;
-	protected errors: string | string[];
+export class thrownFieldErrors {
+	protected errors: { [key: string]: string | string[] };
 
-	constructor(field: string, errors: string[]) {
-		this.field = field;
+	constructor(errors: { [key: string]: string | string[] }) {
 		this.errors = errors;
 	}
 }
 
 export function fieldError(field: string, errors: string | string[]) {
-	return new fieldErrors(field, Array.isArray(errors) ? errors : [errors]);
+	return new thrownFieldErrors({ [field]: Array.isArray(errors) ? errors : [errors] });
+}
+export function fieldErrors(errors: { [key: string]: string | string[] }) {
+	for (const [fieldName, _fieldErrors] of Object.entries(errors)) {
+		errors[fieldName] = Array.isArray(_fieldErrors) ? _fieldErrors : [_fieldErrors];
+	}
+
+	return new thrownFieldErrors(errors);
 }
