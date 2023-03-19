@@ -95,14 +95,10 @@ export function create(configuration: Configuration) {
  * apply default options and pre-format some other properties passed to the Form.svelte components.
  */
 function parseConfiguration(config: Configuration) {
-	return Object.entries(config).map(([formName, formConfiguration]) => {
-		return {
-			name: formName,
-			method: formConfiguration.method ?? 'POST', // default to 'POST' method if none has been set
-			action: formConfiguration.action ?? `?/${formName}`, // set default form action url if none is generated (check generateActions function!)
-			id: formConfiguration.id,
-			component: formConfiguration.component ?? Form, // allow user to overwrite the Form component so they can bring their own
-			fields: Object.entries(formConfiguration.fields || {}).map(([name, fieldConfiguration]) => {
+	const forms = Object.entries(config);
+	return forms.map(([formName, formConfiguration]) => {
+		const fields = Object.entries(formConfiguration.fields || {}).map(
+			([name, fieldConfiguration]) => {
 				if (
 					(fieldConfiguration.type as string) === 'button' ||
 					(fieldConfiguration.type as string) === 'submit' ||
@@ -167,25 +163,38 @@ function parseConfiguration(config: Configuration) {
 				};
 
 				return field;
-			}),
-			buttons: Object.keys(formConfiguration.buttons || {}).length
-				? Object.entries(formConfiguration.buttons || {}).map(([name, buttonConfiguration]) => {
-						// form buttons configuration. Here we do almost the same thing as for the fields above ^
-						return {
-							name,
-							type: buttonConfiguration.type,
-							label:
-								buttonConfiguration.label === undefined
-									? fieldNameToLabelConverter(name)
-									: buttonConfiguration.label !== null
-									? buttonConfiguration.label
-									: null,
-							value: buttonConfiguration.value
-						} as unknown as ParsedFormConfigurationButton;
-				  })
-				: [{ name: null, type: 'submit', label: 'submit form' }],
-			$$config: formConfiguration
+			}
+		);
+
+		const buttons = Object.keys(formConfiguration.buttons || {}).length
+			? Object.entries(formConfiguration.buttons || {}).map(([name, buttonConfiguration]) => {
+					// form buttons configuration. Here we do almost the same thing as for the fields above ^
+					return {
+						name,
+						type: buttonConfiguration.type,
+						label:
+							buttonConfiguration.label === undefined
+								? fieldNameToLabelConverter(name)
+								: buttonConfiguration.label !== null
+								? buttonConfiguration.label
+								: null,
+						value: buttonConfiguration.value
+					} as unknown as ParsedFormConfigurationButton;
+			  })
+			: [{ name: null, type: 'submit', label: 'submit form' }];
+
+		const form = {
+			name: formName,
+			method: formConfiguration.method ?? 'POST', // default to 'POST' method if none has been set
+			action: formConfiguration.action ?? `?/${formName}`, // set default form action url if none is generated (check generateActions function!)
+			id: formConfiguration.id,
+			component: formConfiguration.component ?? Form, // allow user to overwrite the Form component so they can bring their own
+			$$config: formConfiguration,
+			buttons,
+			fields
 		};
+
+		return form;
 	}) as unknown as ParsedFormConfiguration[];
 }
 
