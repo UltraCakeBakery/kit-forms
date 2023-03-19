@@ -81,6 +81,7 @@ export interface FormConfigurationFieldBase {
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
+	hidden?: boolean;
 	rows?: number;
 	pattern?: RegExp;
 	autocomplete?: string | boolean;

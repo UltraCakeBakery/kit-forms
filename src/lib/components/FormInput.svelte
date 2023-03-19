@@ -22,6 +22,7 @@
 	$: rows = field.rows;
 	$: readonly = field.readonly;
 	$: disabled = field.disabled;
+	$: hidden = field.hidden;
 	$: pattern = field.pattern ? field.pattern.toString() : null;
 	$: autocomplete = field.autocomplete;
 	$: errorElement = field.errorElement ?? 'div';
@@ -53,6 +54,8 @@
 				{placeholder}
 				{required}
 				{readonly}
+				{disabled}
+				{hidden}
 				on:input={registerEvents ? null : field.events.onInput}
 				on:blur={registerEvents ? null : field.events.onBlur}
 				on:focus={registerEvents ? null : field.events.onFocus}
@@ -67,6 +70,8 @@
 				{id}
 				{rows}
 				{readonly}
+				{disabled}
+				{hidden}
 				value={$value}
 				on:input={registerEvents ? null : field.events.onInput}
 				on:blur={registerEvents ? null : field.events.onBlur}
@@ -88,6 +93,7 @@
 				{autocomplete}
 				{readonly}
 				{disabled}
+				{hidden}
 				on:input={registerEvents ? null : field.events.onInput}
 				on:blur={registerEvents ? null : field.events.onBlur}
 				on:focus={registerEvents ? null : field.events.onFocus}

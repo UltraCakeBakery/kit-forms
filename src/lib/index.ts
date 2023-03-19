@@ -112,6 +112,7 @@ function parseConfiguration(config: Configuration) {
 					rows: fieldConfiguration.rows,
 					readonly: fieldConfiguration.readonly,
 					disabled: fieldConfiguration.disabled,
+					hidden: fieldConfiguration.hidden,
 					pattern: fieldConfiguration.pattern
 						? fieldConfiguration.pattern.toString().split('/')[1]
 						: null,
