@@ -13,3 +13,5 @@ export default {
 	url: /^(?:https?:\/\/)?(?:[\w-]+\.)+[a-z]{2,}(?:\/[\w-]+)*\/?$/i,
 	secureUrl: /^(?:https:\/\/)?(?:[\w-]+\.)+[a-z]{2,}(?:\/[\w-]+)*\/?$/i
 };
+
+export const specials = new Set<string>('!@#$%^&*()_+-=[]{};\':"\\|,.<>/?]+'.split(''));

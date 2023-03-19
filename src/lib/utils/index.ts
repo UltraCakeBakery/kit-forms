@@ -7,3 +7,39 @@ export function fieldNameToLabelConverter(fieldName: string) {
 	label = label.charAt(0).toUpperCase() + label.slice(1); // uppercase first char
 	return label;
 }
+
+export function countUppercaseChars(str: string): number {
+	let count = 0;
+
+	for (let i = 0; i < str.length; i++) {
+		if (str.charCodeAt(i) >= 65 && str.charCodeAt(i) <= 90) {
+			count++;
+		}
+	}
+
+	return count;
+}
+
+export function countLowercaseChars(str: string): number {
+	let count = 0;
+
+	for (let i = 0; i < str.length; i++) {
+		if (str.charCodeAt(i) >= 97 && str.charCodeAt(i) <= 122) {
+			count++;
+		}
+	}
+
+	return count;
+}
+
+export function countNumberChars(str: string): number {
+	let count = 0;
+
+	for (let i = 0; i < str.length; i++) {
+		if (!Number.isNaN(Number(str.charAt(i)))) {
+			count++;
+		}
+	}
+
+	return count;
+}

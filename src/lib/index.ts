@@ -11,7 +11,15 @@ import type {
 import { get, writable } from 'svelte/store';
 import Form from './components/Form.svelte';
 import FormInput from './components/FormInput.svelte';
-import { regexes, messages, fieldNameToLabelConverter } from './utils';
+import {
+	regexes,
+	messages,
+	fieldNameToLabelConverter,
+	countLowercaseChars,
+	countUppercaseChars,
+	countNumberChars
+} from './utils';
+import { lowercase, specials, uppercase } from './utils/regexes';
 
 /**
  * Use this function to create your forms. It takes an object where each property is a (form) Configuration.
@@ -206,43 +214,44 @@ export function writeFieldErrors(
 				break;
 			case 'minLowercase':
 				condition = field.validate[validation] ?? 0;
-				isValid = value.replace(regexes.uppercases, '').length > condition;
+				isValid = countLowercaseChars(value) >= condition;
 				break;
 			case 'maxLowercase':
 				condition = field.validate[validation] ?? Infinity;
-				isValid = value.replace(regexes.uppercases, '').length < condition;
+				isValid = countLowercaseChars(value) <= condition;
+				break;
 			case 'hasUppercase':
 				isValid = regexes.uppercase.test(value);
 				break;
 			case 'minUppercase':
 				condition = field.validate[validation] ?? 0;
-				isValid = value.replace(regexes.lowercases, '').length > condition;
+				isValid = countUppercaseChars(value) >= condition;
 				break;
 			case 'maxUppercase':
 				condition = field.validate[validation] ?? Infinity;
-				isValid = value.replace(regexes.lowercases, '').length < condition;
+				isValid = countUppercaseChars(value) <= condition;
 				break;
 			case 'hasNumbers':
 				isValid = regexes.numbers.test(value);
 				break;
 			case 'minNumbers':
 				condition = field.validate[validation] ?? 0;
-				isValid = value.replace(regexes.numbers, '').length > condition;
+				isValid = countNumberChars(value) >= condition;
 				break;
 			case 'maxNumbers':
 				condition = field.validate[validation] ?? Infinity;
-				isValid = value.replace(regexes.numbers, '').length < condition;
+				isValid = countNumberChars(value) <= condition;
 				break;
 			case 'hasSpecial':
 				isValid = regexes.special.test(value);
 				break;
 			case 'minSpecial':
 				condition = field.validate[validation] ?? 0;
-				isValid = value.replace(regexes.special, '').length > condition;
+				isValid = Array.from(value).filter((char) => specials.has(char)).length >= condition;
 				break;
 			case 'maxSpecial':
 				condition = field.validate[validation] ?? Infinity;
-				isValid = value.replace(regexes.special, '').length < condition;
+				isValid = Array.from(value).filter((char) => specials.has(char)).length <= condition;
 				break;
 			case 'isUrl':
 				isValid = regexes.url.test(value);
