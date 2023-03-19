@@ -2,7 +2,6 @@ import type { SvelteComponent } from 'svelte';
 import type { Readable, Writable } from 'svelte/store';
 
 export type HTMLInputTypeAttribute =
-	| 'button'
 	| 'checkbox'
 	| 'color'
 	| 'date'
@@ -18,7 +17,6 @@ export type HTMLInputTypeAttribute =
 	| 'range'
 	| 'reset'
 	| 'search'
-	| 'submit'
 	| 'tel'
 	| 'text'
 	| 'time'

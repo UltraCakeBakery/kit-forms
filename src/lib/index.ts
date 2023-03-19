@@ -3,6 +3,7 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 import type {
 	Configuration,
+	HTMLInputTypeAttribute,
 	ParsedFormConfiguration,
 	ParsedFormConfigurationButton,
 	ParsedFormConfigurationField,
@@ -102,6 +103,16 @@ function parseConfiguration(config: Configuration) {
 			id: formConfiguration.id,
 			component: formConfiguration.component ?? Form, // allow user to overwrite the Form component so they can bring their own
 			fields: Object.entries(formConfiguration.fields || {}).map(([name, fieldConfiguration]) => {
+				if (
+					(fieldConfiguration.type as string) === 'button' ||
+					(fieldConfiguration.type as string) === 'submit' ||
+					fieldConfiguration.type === 'reset'
+				) {
+					throw new Error(
+						`fields of type \`${fieldConfiguration.type}\` are not allowed. Please configuration regular <button> elements instead.`
+					);
+				}
+
 				const field = {
 					name,
 					type: fieldConfiguration.type,
