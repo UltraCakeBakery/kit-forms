@@ -192,7 +192,7 @@ export function writeFieldErrors(
 	const value = String(formData ? formData.get(field.name) : get(field.value));
 
 	for (const validation of Object.keys(field.validate) as Array<keyof ValidationRules>) {
-		let isValid: boolean = true;
+		let isValid = true;
 		let condition;
 		switch (validation) {
 			case 'isEmail':
@@ -205,6 +205,7 @@ export function writeFieldErrors(
 			case 'minLength':
 				condition = field.validate[validation] ?? 0;
 				isValid = value?.length > condition;
+				break;
 			case 'maxLength':
 				condition = field.validate[validation] ?? Infinity;
 				isValid = value?.length < condition;
