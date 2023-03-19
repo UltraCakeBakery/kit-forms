@@ -348,7 +348,7 @@ export function createActions( // TODO: better documentation... but this is stil
 					});
 				} catch (error) {
 					if (error instanceof thrownFieldErrors) {
-						return { __KIT_FORMS__: { [form.name]: { [error.field]: error.errors } } };
+						return { __KIT_FORMS__: { [form.name]: error.errors } };
 					}
 
 					throw error;
@@ -399,7 +399,7 @@ export function getFormElementAttributes(
 }
 
 export class thrownFieldErrors {
-	protected errors: { [key: string]: string | string[] };
+	public errors: { [key: string]: string | string[] };
 
 	constructor(errors: { [key: string]: string | string[] }) {
 		this.errors = errors;
