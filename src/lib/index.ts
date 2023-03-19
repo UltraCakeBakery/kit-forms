@@ -330,21 +330,29 @@ export function createActions( // TODO: better documentation... but this is stil
 				}
 			}
 
-			if (hasErrors) return { [form.name]: formErrors };
+			if (hasErrors) return { __KIT_FORMS__: { [form.name]: formErrors } };
 
 			if (actions[form.name]) {
-				await actions[form.name](event, {
-					formData,
-					data: new Proxy(
-						{},
-						{
-							get(target: any, prop: string) {
-								if (formData.has(prop)) return formData.get(prop);
-								return target[prop];
+				try {
+					await actions[form.name](event, {
+						formData,
+						data: new Proxy(
+							{},
+							{
+								get(target: any, prop: string) {
+									if (formData.has(prop)) return formData.get(prop);
+									return target[prop];
+								}
 							}
-						}
-					)
-				});
+						)
+					});
+				} catch (error) {
+					if (error instanceof fieldErrors) {
+						return { __KIT_FORMS__: { [form.name]: { [error.field]: error.errors } } };
+					}
+
+					throw error;
+				}
 			}
 		};
 	}
@@ -383,4 +391,18 @@ export function getFormElementAttributes(
 	const id = props.id ?? parsedFormConfiguration.id ?? undefined;
 
 	return { name, method, action, id, class: props.class };
+}
+
+export class fieldErrors {
+	protected field: string;
+	protected errors: string | string[];
+
+	constructor(field: string, errors: string[]) {
+		this.field = field;
+		this.errors = errors;
+	}
+}
+
+export function fieldError(field: string, errors: string | string[]) {
+	return new fieldErrors(field, Array.isArray(errors) ? errors : [errors]);
 }
