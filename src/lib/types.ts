@@ -131,3 +131,12 @@ export interface ParsedFormConfigurationField extends FormConfigurationFieldBase
 export interface ParsedFormConfigurationButton extends FormConfigurationButton {
 	name: string;
 }
+
+export interface CreatedForms {
+	[form: string]: any;
+	createActions: any;
+	snapshots: {
+		capture: any;
+		restore: any;
+	};
+}

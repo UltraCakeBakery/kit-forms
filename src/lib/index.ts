@@ -6,7 +6,8 @@ import type {
 	ParsedFormConfiguration,
 	ParsedFormConfigurationButton,
 	ParsedFormConfigurationField,
-	ValidationRules
+	ValidationRules,
+	CreatedForms
 } from './types';
 import { get, writable } from 'svelte/store';
 import Form from './components/Form.svelte';
@@ -26,7 +27,7 @@ import {
  * It returns an object where each property is a svelte component, ready for you to mount through <svelte:component this={}>
  * in your svelte components.
  */
-export function create(configuration: Configuration) {
+export function create(configuration: Configuration): CreatedForms {
 	const parsedFormConfigurations = parseConfiguration(configuration);
 
 	return new Proxy(
@@ -85,7 +86,7 @@ export function create(configuration: Configuration) {
 				};
 			}
 		}
-	);
+	) as CreatedForms;
 }
 
 /**
