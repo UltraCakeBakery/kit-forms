@@ -7,8 +7,8 @@ Makes dealing with complex `<form>` creation and validation easy.
 - 🪄 Amazing developer experience due to minimal boilerplate.
 - 🤖 A lot of busy work is done for you, intellegently and quickly.
 - 👐🏻 Consistent surface level validation on both client and server side.
-- ⚡ No javascript first formvalidation, for maximum compatibility and the best possible user experience.
-- 🦯 All generated components are accessible and WCAG compliant.
+- ⚡ Native browser formvalidation first approach, for maximum compatibility and the best possible user experience.
+- 🦯 Accessible and WCAG compliant default components.
 - 🏃🏻‍♂️ It is the fastest performing form validation library available for SvelteKit.
 - 🚀 Cut your codebase in half and ship pages with forms faster then every before!
 - 🤓 Fully typed using typescript, with automatic type declartion generation for action handlers.
