@@ -5,7 +5,8 @@ import type {
 	Configuration,
 	ParsedFormConfiguration,
 	ParsedFormConfigurationButton,
-	ParsedFormConfigurationField
+	ParsedFormConfigurationField,
+	ValidationRules
 } from './types';
 import { get, writable } from 'svelte/store';
 import Form from './components/Form.svelte';
@@ -25,14 +26,12 @@ export function create(configuration: Configuration) {
 		{
 			get(target: { [key: string | symbol]: any }, prop) {
 				// https://github.com/UltraCakeBakery/kit-forms/tree/main#step-23-mounting-your-forms
-				if (prop === 'snapshot')
-				{
+				if (prop === 'snapshot') {
 					return createSnapshotConfig(parsedFormConfigurations);
 				}
 
 				// https://github.com/UltraCakeBakery/kit-forms/tree/main#step-23-mounting-your-forms
-				if (prop === 'createActions')
-				{
+				if (prop === 'createActions') {
 					return (actions: Actions) => createActions(parsedFormConfigurations, actions);
 				}
 
@@ -102,9 +101,13 @@ function parseConfiguration(config: Configuration) {
 					description: fieldConfiguration.description,
 					options: fieldConfiguration.options,
 					required: fieldConfiguration.required,
-					pattern: fieldConfiguration.pattern ? fieldConfiguration.pattern.toString().split('/')[1] : null,
+					pattern: fieldConfiguration.pattern
+						? fieldConfiguration.pattern.toString().split('/')[1]
+						: null,
 					validate: fieldConfiguration.validate,
-					autocomplete: [false, null].includes( fieldConfiguration.autocomplete ) ? 'off' : fieldConfiguration.autocomplete,
+					autocomplete: [false, null].includes(fieldConfiguration.autocomplete)
+						? 'off'
+						: fieldConfiguration.autocomplete,
 					id: fieldConfiguration.id ?? `${formName}-${name}`, // default <input id=""> is equal to form name and name of the input.
 					component: fieldConfiguration.component ?? FormInput,
 					label:
@@ -121,54 +124,51 @@ function parseConfiguration(config: Configuration) {
 
 				// generate events you can use inside the Form component
 				field.events = {
-					onInput: (event: any) => { // Using `any` due to the lack of browser event types available here in our node dev env.
+					onInput: (event: any) => {
+						// Using `any` due to the lack of browser event types available here in our node dev env.
 						event?.preventDefault();
 						field.value.set(event.target.value); // write value to store
 						field.serverErrors.set([]); // set server errors to null and rely on validation happening on the client side
 
-						if (formConfiguration.errorsOnInput)
-						{
+						if (formConfiguration.errorsOnInput) {
 							writeFieldErrors(field, field.localErrors); // if user has enabled that errors should display as you are typing, do so.
-						}
-						else
-						{
+						} else {
 							field.localErrors.set([]); // by default, we remove all errors when the user starts typing again.
 						}
 					},
 					onBlur: (event: any) => {
 						// when user clicks outside the input, or focuses on something else, remove server errors and validate input / show clientside errors
-						field.serverErrors.set([]); 
+						field.serverErrors.set([]);
 						writeFieldErrors(field, field.localErrors);
 					}
 				};
 
 				return field;
 			}),
-			buttons: Object.keys(formConfiguration.buttons || {}).length ? Object.entries(formConfiguration.buttons || {}).map(
-				([name, buttonConfiguration]) => {
-					// form buttons configuration. Here we do almost the same thing as for the fields above ^
-					return {
-						name,
-						type: buttonConfiguration.type,
-						label:
-							buttonConfiguration.label === undefined
-								? fieldNameToLabelConverter(name)
-								: buttonConfiguration.label !== null
-								? buttonConfiguration.label
-								: null,
-						value: buttonConfiguration.value
-					} as unknown as ParsedFormConfigurationButton;
-				}
-			) : [{ name:null, type: 'submit', label: 'submit form'}],
+			buttons: Object.keys(formConfiguration.buttons || {}).length
+				? Object.entries(formConfiguration.buttons || {}).map(([name, buttonConfiguration]) => {
+						// form buttons configuration. Here we do almost the same thing as for the fields above ^
+						return {
+							name,
+							type: buttonConfiguration.type,
+							label:
+								buttonConfiguration.label === undefined
+									? fieldNameToLabelConverter(name)
+									: buttonConfiguration.label !== null
+									? buttonConfiguration.label
+									: null,
+							value: buttonConfiguration.value
+						} as unknown as ParsedFormConfigurationButton;
+				  })
+				: [{ name: null, type: 'submit', label: 'submit form' }],
 			$$config: formConfiguration
 		};
 	}) as unknown as ParsedFormConfiguration[];
 }
 
-
 /**
  * This function is where validation happens.
- * 
+ *
  * 1. You pass the field object that holds the validations and other configurations
  * 2. You pass the writable([]) we should set the list of errors in
  * 3. optional: pass formData (used on serverside in actions) where we should get the value from instead.
@@ -181,33 +181,81 @@ export function writeFieldErrors(
 	if (!field.validate) return true;
 
 	const _errors = [] as string[];
-	const value = (formData ? formData.get(field.name) : get(field.value)) + '';
+	const value = String(formData ? formData.get(field.name) : get(field.value));
 
-	for (const [validation, condition] of Object.entries(field.validate)) {
-		if (
-			(validation === 'isEmail' && condition === true && !regexes.email.test(value)) ||
-			(validation === 'hasLength' && !value?.length) ||
-			(validation === 'minLength' && value?.length < condition) ||
-			(validation === 'maxLength' && value?.length > condition) ||
-			(validation === 'hasLowercase' && !regexes.lowercase.test(value)) ||
-			(validation === 'minLowercase' &&
-				value?.replace(regexes.uppercases, '').length < condition) ||
-			(validation === 'maxLowercase' &&
-				value?.replace(regexes.uppercases, '').length > condition) ||
-			(validation === 'hasUppercase' && !regexes.uppercase.test(value)) ||
-			(validation === 'minUppercase' &&
-				value?.replace(regexes.lowercases, '').length < condition) ||
-			(validation === 'maxUppercase' &&
-				value?.replace(regexes.lowercases, '').length > condition) ||
-			(validation === 'hasNumbers' && !regexes.numbers.test(value)) ||
-			(validation === 'minNumbers' && value?.replace(regexes.numbers, '').length < condition) ||
-			(validation === 'maxNumbers' && value?.replace(regexes.numbers, '').length > condition) ||
-			(validation === 'hasSpecial' && !regexes.special.test(value)) ||
-			(validation === 'minSpecial' && value?.replace(regexes.specials, '').length < condition) ||
-			(validation === 'maxSpecial' && value?.replace(regexes.specials, '').length > condition)
-		)
+	for (const validation of Object.keys(field.validate) as Array<keyof ValidationRules>) {
+		let isValid: boolean = true;
+		let condition;
+		switch (validation) {
+			case 'isEmail':
+				condition = field.validate[validation];
+				isValid = condition === true && !regexes.email.test(value);
+				break;
+			case 'hasLength':
+				isValid = !value?.length;
+				break;
+			case 'minLength':
+				condition = field.validate[validation] ?? 0;
+				isValid = value?.length > condition;
+			case 'maxLength':
+				condition = field.validate[validation] ?? Infinity;
+				isValid = value?.length < condition;
+				break;
+			case 'hasLowercase':
+				isValid = regexes.lowercase.test(value);
+				break;
+			case 'minLowercase':
+				condition = field.validate[validation] ?? 0;
+				isValid = value.replace(regexes.uppercases, '').length > condition;
+				break;
+			case 'maxLowercase':
+				condition = field.validate[validation] ?? Infinity;
+				isValid = value.replace(regexes.uppercases, '').length < condition;
+			case 'hasUppercase':
+				isValid = regexes.uppercase.test(value);
+				break;
+			case 'minUppercase':
+				condition = field.validate[validation] ?? 0;
+				isValid = value.replace(regexes.lowercases, '').length > condition;
+				break;
+			case 'maxUppercase':
+				condition = field.validate[validation] ?? Infinity;
+				isValid = value.replace(regexes.lowercases, '').length < condition;
+				break;
+			case 'hasNumbers':
+				isValid = regexes.numbers.test(value);
+				break;
+			case 'minNumbers':
+				condition = field.validate[validation] ?? 0;
+				isValid = value.replace(regexes.numbers, '').length > condition;
+				break;
+			case 'maxNumbers':
+				condition = field.validate[validation] ?? Infinity;
+				isValid = value.replace(regexes.numbers, '').length < condition;
+				break;
+			case 'hasSpecial':
+				isValid = regexes.special.test(value);
+				break;
+			case 'minSpecial':
+				condition = field.validate[validation] ?? 0;
+				isValid = value.replace(regexes.special, '').length > condition;
+				break;
+			case 'maxSpecial':
+				condition = field.validate[validation] ?? Infinity;
+				isValid = value.replace(regexes.special, '').length < condition;
+				break;
+			case 'isUrl':
+				isValid = regexes.url.test(value);
+				break;
+			case 'isSecureUrl':
+				isValid = regexes.secureUrl.test(value);
+				break;
+			default:
+				break;
+		}
+		!isValid &&
 			_errors.push(
-				field.messages?.[validation]?.replaceAll('%required_amount%', condition + '') ||
+				field.messages?.[validation]?.replace(/%required_amount%/g, String(condition)) ||
 					'Missing error message for ' + validation
 			); // || defaultMessages.get(validation, condition, field )
 	}
@@ -286,7 +334,7 @@ export function createSnapshotConfig(parsedFormConfigurations: ParsedFormConfigu
 /**
  * Helper function for generating <form ...> attributes.
  * usage: <form {...getFormElementAttributes($$props, form)}
- * 
+ *
  * See Form.svelte for example of its usage.
  */
 export function getFormElementAttributes(
