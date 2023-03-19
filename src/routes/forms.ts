@@ -51,6 +51,20 @@ export default create({
 			submit: {}
 		}
 	},
+	passwordReset: {
+		fields: {
+			email: {
+				type: 'email',
+				required: true
+			},
+			resetToken: {
+				type: 'password',
+				required: true,
+				pattern: /2+b+f+0+Z/
+			}
+		},
+		buttons: {}
+	},
 	createAccount: {
 		fields: {
 			email: {
@@ -84,24 +98,5 @@ export default create({
 				}
 			}
 		}
-	},
-	passwordReset: {
-		fields: {
-			email: {
-				type: 'textarea',
-				rows: 5,
-				autocomplete: false,
-				required: true,
-				validate: {
-					isEmail: true
-				}
-			},
-			resetToken: {
-				type: 'password',
-				required: true,
-				pattern: /a+b+c/
-			}
-		},
-		buttons: {}
 	}
 });

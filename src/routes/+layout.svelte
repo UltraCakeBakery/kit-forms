@@ -19,6 +19,6 @@
 
 <style>
 	:global(button) {
-		@apply relative p-3 rounded bg-dark-500 w-full text-white uppercase font-bold;
+		@apply \!relative \!p-3 \!rounded \!bg-dark-500 \!w-full \!text-white \!uppercase \!font-bold;
 	}
 </style>

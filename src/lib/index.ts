@@ -181,7 +181,7 @@ function parseConfiguration(config: Configuration) {
 						value: buttonConfiguration.value
 					} as unknown as ParsedFormConfigurationButton;
 			  })
-			: [{ name: null, type: 'submit', label: 'submit form' }];
+			: [{ type: 'submit', label: 'submit form' }];
 
 		const form = {
 			name: formName,
