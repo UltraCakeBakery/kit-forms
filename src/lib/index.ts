@@ -197,7 +197,7 @@ export function writeFieldErrors(
 		switch (validation) {
 			case 'isEmail':
 				condition = field.validate[validation];
-				isValid = condition === true && !regexes.email.test(value);
+				isValid = condition === true && regexes.email.test(value);
 				break;
 			case 'hasLength':
 				isValid = !value?.length;
@@ -248,11 +248,13 @@ export function writeFieldErrors(
 				break;
 			case 'minSpecial':
 				condition = field.validate[validation] ?? 0;
-				isValid = Array.from(value).filter((char) => specials.has(char)).length >= condition;
+				isValid =
+					Array.from(value).filter((char) => consts.specials.includes(char)).length >= condition;
 				break;
 			case 'maxSpecial':
 				condition = field.validate[validation] ?? Infinity;
-				isValid = Array.from(value).filter((char) => specials.has(char)).length <= condition;
+				isValid =
+					Array.from(value).filter((char) => consts.specials.includes(char)).length <= condition;
 				break;
 			case 'isUrl':
 				isValid = regexes.url.test(value);
