@@ -4,20 +4,15 @@
 	export const snapshot = forms.snapshot;
 </script>
 
-<main style="display: flex; justify-content: space-between; flex-direction: row;">
-	<svelte:component this={forms.login} />
-	<svelte:component this={forms.register} />
-</main>
+<svelte:component this={forms.login} />
 
 <style>
 	:global(html, body) {
-		font-family: 'Roboto', sans-serif;
+		@apply font-sans;
 	}
 
 	:global(form .field) {
-		display: flex;
-		flex-direction: column;
-		margin-bottom: 1rem;
+		@apply flex mb-1 flex-col;
 	}
 
 	:global(form .field .label-wrapper) {

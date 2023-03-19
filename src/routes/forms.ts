@@ -1,41 +1,7 @@
 import { create } from '$lib/index';
 
 export default create({
-	register: {
-		fields: {
-			email: {
-				type: 'email',
-				placeholder: 'john.doe@example.com',
-				required: true,
-				validate: {
-					isEmail: true
-				}
-			},
-			password: {
-				type: 'password',
-				placeholder: '************',
-				description:
-					'Pick a safe and secure password that has a minimum length of 8 characters, and includes atleast one uppercase, lowercase, number and special character.',
-				required: true,
-				validate: {
-					minLength: 8,
-					hasUppercase: true,
-					hasLowercase: true,
-					hasNumbers: true
-				}
-			},
-			'repeat-password': {
-				type: 'password',
-				placeholder: '************',
-				description: 'To make sure you typed your password correctly, please repeat it again here.',
-				required: true,
-				validate: {
-					sameAs: 'password'
-				}
-			}
-		}
-	},
-	login: {
+		login: {
 		fields: {
 			email: {
 				type: 'email',
@@ -78,6 +44,40 @@ export default create({
 		},
 		buttons: {
 			submit: {}
+		}
+	},
+	createAccount: {
+		fields: {
+			email: {
+				type: 'email',
+				placeholder: 'john.doe@example.com',
+				required: true,
+				validate: {
+					isEmail: true
+				}
+			},
+			password: {
+				type: 'password',
+				placeholder: '************',
+				description:
+					'Pick a safe and secure password that has a minimum length of 8 characters, and includes at least one uppercase, lowercase, number and special character.',
+				required: true,
+				validate: {
+					minLength: 8,
+					hasUppercase: true,
+					hasLowercase: true,
+					hasNumbers: true
+				}
+			},
+			'repeat-password': {
+				type: 'password',
+				placeholder: '************',
+				description: 'To make sure you typed your password correctly, please repeat it again here.',
+				required: true,
+				validate: {
+					sameAs: 'password'
+				}
+			}
 		}
 	}
 });

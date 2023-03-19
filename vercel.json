@@ -1,0 +1,22 @@
+{
+    "headers": [
+        {
+            "source": "/(.*)(.svg|.jpg|.js|.css|.webp|.png)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, immutable, max-age=31536000"
+                }
+            ]
+        },
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                }
+            ]
+        }
+    ]
+}

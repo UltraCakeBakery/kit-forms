@@ -43,9 +43,7 @@ export function create(configuration: Configuration) {
 
 				if (typeof Form === 'object')
 					return new Proxy(Form, {
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
 						get: (target: { [key: string | symbol]: any }, prop) => {
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
 							if (prop === 'render')
 								return (props: any, { $$slots = {}, context = new Map() } = {}) => {
 									return target.render(
@@ -54,7 +52,6 @@ export function create(configuration: Configuration) {
 									);
 								};
 
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
 							if (prop === '$$render')
 								return (result: any, props: any, bindings: any, slots: any, context: any) => {
 									return target.$$render(
