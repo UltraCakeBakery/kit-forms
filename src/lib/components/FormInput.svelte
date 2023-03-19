@@ -53,7 +53,6 @@
 				value={$value}
 				{placeholder}
 				{required}
-				{readonly}
 				{disabled}
 				{hidden}
 				on:input={registerEvents ? field.events.onInput : null}

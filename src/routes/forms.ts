@@ -26,6 +26,10 @@ export default create({
 					// hasSpecial: true
 				}
 			},
+			test: {
+				type: 'select',
+				options: [{ label: 'Test', value: 123 }]
+			},
 			rememberMe: {
 				type: 'checkbox'
 			}

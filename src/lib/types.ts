@@ -1,4 +1,3 @@
-import type { SvelteComponent } from 'svelte';
 import type { Readable, Writable } from 'svelte/store';
 
 export type HTMLInputTypeAttribute =
@@ -77,12 +76,12 @@ export interface FormConfigurationFieldBase {
 	options?: [{ value: string | number | boolean | null; label: string }];
 	errors?: Readable<string[]>;
 	required?: boolean;
-	readonly?: boolean;
 	disabled?: boolean;
+	readonly?: boolean;
 	hidden?: boolean;
 	rows?: number;
 	pattern?: RegExp;
-	autocomplete?: string | boolean;
+	autocomplete?: string | null;
 	id?: string;
 	errorElement?: 'div' | 'ul' | 'ol';
 	validate?: Partial<ValidationRules>;
@@ -100,7 +99,8 @@ export interface FormConfigurationFieldInput extends FormConfigurationFieldBase 
 }
 export interface FormConfigurationFieldSelect extends FormConfigurationFieldBase {
 	type: 'select';
-	options?: [{ value: string; label: string }];
+	readonly?: never;
+	options?: [{ value: any; label: string }];
 }
 export interface FormConfigurationFieldTextarea extends FormConfigurationFieldBase {
 	type: 'textarea';
@@ -116,11 +116,12 @@ export interface ParsedFormConfiguration {
 }
 
 export interface ParsedFormConfigurationField extends FormConfigurationFieldBase {
+	readonly: any;
 	name: string;
 	value: Writable<string>;
 	serverErrors: Writable<string[]>;
 	localErrors: Writable<string[]>;
-	component: SvelteComponent; // Using any for compatibility reasons. Do not remove!
+	component: any; // Using any for compatibility reasons. Do not remove!
 	events: {
 		onInput: (event: object) => any;
 		onBlur: (event: object) => any;
@@ -130,4 +131,13 @@ export interface ParsedFormConfigurationField extends FormConfigurationFieldBase
 
 export interface ParsedFormConfigurationButton extends FormConfigurationButton {
 	name: string;
+}
+
+export interface CreatedForms {
+	[form: string]: any;
+	createActions: any;
+	snapshots: {
+		capture: any;
+		restore: any;
+	};
 }

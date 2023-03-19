@@ -6,7 +6,8 @@ import type {
 	ParsedFormConfiguration,
 	ParsedFormConfigurationButton,
 	ParsedFormConfigurationField,
-	ValidationRules
+	ValidationRules,
+	CreatedForms
 } from './types';
 import { get, writable } from 'svelte/store';
 import Form from './components/Form.svelte';
@@ -26,7 +27,7 @@ import {
  * It returns an object where each property is a svelte component, ready for you to mount through <svelte:component this={}>
  * in your svelte components.
  */
-export function create(configuration: Configuration) {
+export function create(configuration: Configuration): CreatedForms {
 	const parsedFormConfigurations = parseConfiguration(configuration);
 
 	return new Proxy(
@@ -85,7 +86,7 @@ export function create(configuration: Configuration) {
 				};
 			}
 		}
-	);
+	) as CreatedForms;
 }
 
 /**
@@ -347,7 +348,7 @@ export function createActions( // TODO: better documentation... but this is stil
 					});
 				} catch (error) {
 					if (error instanceof thrownFieldErrors) {
-						return { __KIT_FORMS__: { [form.name]: { [error.field]: error.errors } } };
+						return { __KIT_FORMS__: { [form.name]: error.errors } };
 					}
 
 					throw error;
@@ -398,7 +399,7 @@ export function getFormElementAttributes(
 }
 
 export class thrownFieldErrors {
-	protected errors: { [key: string]: string | string[] };
+	public errors: { [key: string]: string | string[] };
 
 	constructor(errors: { [key: string]: string | string[] }) {
 		this.errors = errors;
