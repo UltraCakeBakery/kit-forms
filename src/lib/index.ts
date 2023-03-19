@@ -102,6 +102,7 @@ function parseConfiguration(config: Configuration) {
 					description: fieldConfiguration.description,
 					options: fieldConfiguration.options,
 					required: fieldConfiguration.required,
+					pattern: fieldConfiguration.pattern ? fieldConfiguration.pattern.toString().split('/')[1] : null,
 					validate: fieldConfiguration.validate,
 					id: fieldConfiguration.id ?? `${formName}-${name}`, // default <input id=""> is equal to form name and name of the input.
 					component: fieldConfiguration.component ?? FormInput,
@@ -142,7 +143,7 @@ function parseConfiguration(config: Configuration) {
 
 				return field;
 			}),
-			buttons: Object.entries(formConfiguration.buttons || {}).map(
+			buttons: Object.keys(formConfiguration.buttons || {}).length ? Object.entries(formConfiguration.buttons || {}).map(
 				([name, buttonConfiguration]) => {
 					// form buttons configuration. Here we do almost the same thing as for the fields above ^
 					return {
@@ -157,7 +158,7 @@ function parseConfiguration(config: Configuration) {
 						value: buttonConfiguration.value
 					} as unknown as ParsedFormConfigurationButton;
 				}
-			),
+			) : [{ name:null, type: 'submit', label: 'submit form'}],
 			$$config: formConfiguration
 		};
 	}) as unknown as ParsedFormConfiguration[];

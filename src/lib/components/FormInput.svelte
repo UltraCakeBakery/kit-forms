@@ -19,6 +19,7 @@
 	$: minlength = type === 'text' ? field.validate?.minLength : undefined;
 	$: maxlength = type === 'text' ? field.validate?.maxLength : undefined;
 	$: required = field.required;
+	$: pattern = field.pattern ? field.pattern.toString() : null;
 	$: errorElement = field.errorElement ?? 'div'
 
 	$: localErrors = field.localErrors;
@@ -31,13 +32,13 @@
 
 <div class="field {name}{type ? ` type-${type}` : ''}{errors?.length ? ' has-errors' : ''}">
 	<div class="label-wrapper">
-		{#if label !== null}
-			{ #if typeof label === 'string' }
-				<label for={id}>{label}</label>
-			{ :else if label }
-				<svelte:component this={label} {id}></svelte:component>
-			{ /if }
-		{/if}
+		{ #if typeof label === 'string' }
+			<label for={id}>
+				{label}
+			</label>
+		{ :else }
+			<svelte:component this={label} {id} />
+		{ /if }
 		{#if type !== 'select'}
 			<input
 				{name}
@@ -50,6 +51,7 @@
 				value={$value}
 				{placeholder}
 				{required}
+				{pattern}
 				on:blur={field.events.onBlur}
 				on:input={field.events.onInput}
 			/>

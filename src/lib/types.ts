@@ -53,6 +53,7 @@ export interface FormConfigurationFieldBase {
 	options?: [{ value: string | number | boolean | null; label: string }];
 	errors?: Readable<string[]>;
 	required?: boolean;
+	pattern?: RegExp;
 	id?: string;
 	errorElement?: 'div' | 'ul' | 'ol'
 	validate?: {

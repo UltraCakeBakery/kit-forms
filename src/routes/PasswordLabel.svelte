@@ -4,5 +4,5 @@
 
 <div class="flex flex-row justify-between">
     <label for={id} class="block">Password</label>
-    <a href="?password-reset">Reset password</a>
+    <a href="?password-reset" class="text-sm underline">Reset password</a>
 </div>

@@ -85,7 +85,17 @@ export default create(
 			}
 		},
 		passwordReset: {
-			fields: {},
+			fields: {
+				email: {
+					type: "email",
+					required: true,
+				},
+				resetToken: {
+					type: "password",
+					required: true,
+					pattern: /a+b+c/
+				}
+			},
 			buttons: {}
 		}
 	}
