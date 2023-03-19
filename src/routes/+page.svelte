@@ -1,37 +1,33 @@
 <script lang="ts">
-	import forms from './forms'
-	import { page } from '$app/stores'
+	import forms from './forms';
+	import { page } from '$app/stores';
 
 	export const snapshot = forms.snapshot;
 </script>
 
-<svelte:component this={!$page.url.searchParams.has('password-reset') ? forms.login : forms.passwordReset} />
+<svelte:component this={forms[$page.url.searchParams.get('form') || 'login']} />
 
 <style>
 	:global(html, body) {
 		@apply font-sans;
 	}
 
-	:global(form)
-	{
+	:global(form) {
 		@apply w-full m-12;
 	}
 
-	:global(form .fields)
-	{
+	:global(form .fields) {
 		@apply space-y-4;
 	}
-	
-	:global(form .errors)
-	{
+
+	:global(form .errors) {
 		@apply text-red-500;
 	}
-	
-	:global(form .error)
-	{
+
+	:global(form .error) {
 		@apply text-sm;
 	}
-	
+
 	:global(form .field) {
 		@apply flex mb-1 flex-col w-full;
 	}
@@ -60,8 +56,7 @@
 
 	:global(form .has-errors input),
 	:global(form .has-errors select),
-	:global(form .has-errors textarea)
-	{
+	:global(form .has-errors textarea) {
 		@apply \!border-red-600 shadow-red-600 shadow-opacity-10 text-red-600;
 	}
 </style>
