@@ -6,9 +6,13 @@ export default create({
 	login: {
 		fields: {
 			email: {
-				type: 'email',
+				type: 'date',
 				placeholder: 'john.doe@example.com',
-				required: true
+				required: true,
+				validate: {
+					minDate: new Date('03/19/2023'),
+					maxDate: new Date('10/19/2023')
+				}
 			},
 			password: {
 				type: 'password',
