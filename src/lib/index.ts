@@ -19,7 +19,8 @@ import {
 	fieldNameToLabelConverter,
 	countLowercaseChars,
 	countUppercaseChars,
-	countNumberChars
+	countNumberChars,
+	isDate
 } from './utils';
 import { browser } from '$app/environment';
 
@@ -286,13 +287,23 @@ export function writeFieldErrors(
 				case 'isSecureUrl':
 					isValid = regexes.secureUrl.test(value);
 					break;
-				default:
+				case 'minDate':
+					condition = field.validate[validation];
+					if (!condition) throw new Error(`minDate condition not set`);
+					isValid = new Date(value) >= condition;
 					break;
+				case 'maxDate':
+					condition = field.validate[validation];
+					if (!condition) throw new Error(`maxDate condition not set`);
+					isValid = new Date(value) <= condition;
+				default:
+					throw new Error(`Unknown validation type: ${validation}`);
 			}
 
+			const amount = isDate(condition) ? condition.toLocaleDateString() : String(condition);
 			if (!isValid) {
 				_errors.push(
-					field.messages?.[validation]?.replace(/%required_amount%/g, String(condition)) ||
+					field.messages?.[validation]?.replace(/%required_amount%/g, amount) ||
 						'Missing error message for ' + validation
 				); // || defaultMessages.get(validation, condition, field )
 			}
@@ -300,7 +311,7 @@ export function writeFieldErrors(
 	}
 
 	// We use this to check if we are in the actions handler.
-	// This will one day cause an issue for an edge case user, but i dont know what else to check against for now.
+	// HACK: This will one day cause an issue for an edge case user, but i dont know what else to check against for now.
 	if (!browser) {
 		if (field.required && (value === null || !value.length)) {
 			_errors.push('This field is required, but it is missing from the form submission.');

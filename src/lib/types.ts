@@ -64,6 +64,8 @@ export interface ValidationRules {
 	sameAs: string;
 	isUrl: string;
 	isSecureUrl: string;
+	minDate: Date;
+	maxDate: Date;
 }
 
 export interface FormConfigurationFieldBase {
