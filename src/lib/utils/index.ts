@@ -1,10 +1,6 @@
-import * as _regexes from './regexes';
-import * as _consts from './consts';
-import * as _messages from './messages';
-
-export const regexes = _regexes;
-export const consts = _consts;
-export const messages = _messages;
+export * as regexes from './regexes';
+export * as consts from './consts';
+export * as messages from './messages';
 
 export function fieldNameToLabelConverter(fieldName: string) {
 	let label = fieldName.replace(/[-_]/g, ' '); // Replace all - and _ with spaces
