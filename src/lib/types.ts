@@ -29,7 +29,7 @@ export interface FormConfiguration {
 	method?: string;
 	action?: string;
 	id?: string;
-	component?: object;
+	component?: unknown;
 	errorsOnInput?: boolean;
 	fields?: { [name: string]: FormConfigurationField };
 	buttons?: { [name: string]: FormConfigurationButton };
@@ -69,10 +69,10 @@ export interface ValidationRules {
 }
 
 export interface FormConfigurationFieldBase {
-	component?: object;
+	component?: unknown;
 	type?: unknown;
 	value?: Readable<string>;
-	label?: any;
+	label?: unknown;
 	placeholder?: string;
 	description?: string;
 	options?: [{ value: string | number | boolean | null; label: string }];
@@ -102,7 +102,7 @@ export interface FormConfigurationFieldInput extends FormConfigurationFieldBase 
 export interface FormConfigurationFieldSelect extends FormConfigurationFieldBase {
 	type: 'select';
 	readonly?: never;
-	options?: [{ value: any; label: string }];
+	options?: [{ value: string; label: string }];
 }
 export interface FormConfigurationFieldTextarea extends FormConfigurationFieldBase {
 	type: 'textarea';
@@ -118,16 +118,15 @@ export interface ParsedFormConfiguration {
 }
 
 export interface ParsedFormConfigurationField extends FormConfigurationFieldBase {
-	readonly: any;
 	name: string;
 	value: Writable<string>;
 	serverErrors: Writable<string[]>;
 	localErrors: Writable<string[]>;
-	component: any; // Using any for compatibility reasons. Do not remove!
+	component: unknown; // Using any for compatibility reasons. Do not remove!
 	events: {
-		onInput: (event: object) => any;
-		onBlur: (event: object) => any;
-		onFocus?: (event: object) => any;
+		onInput: (event: object) => null;
+		onBlur: (event: object) => null;
+		onFocus?: (event: object) => null;
 	};
 }
 
@@ -136,10 +135,10 @@ export interface ParsedFormConfigurationButton extends FormConfigurationButton {
 }
 
 export interface CreatedForms {
-	[form: string]: any;
-	createActions: any;
+	[form: string]: unknown;
+	createActions: unknown;
 	snapshots: {
-		capture: any;
-		restore: any;
+		capture: unknown;
+		restore: unknown;
 	};
 }

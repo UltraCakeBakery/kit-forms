@@ -30,7 +30,7 @@ export default create({
 			test: {
 				type: 'select',
 				required: true,
-				options: [{ label: 'Test', value: 123 }]
+				options: [{ label: 'Test', value: '123' }]
 			},
 			rememberMe: {
 				type: 'checkbox'
