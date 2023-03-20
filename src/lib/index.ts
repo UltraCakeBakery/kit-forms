@@ -219,6 +219,7 @@ export function writeFieldErrors(
 		for (const validation of Object.keys(field.validate) as Array<keyof ValidationRules>) {
 			let isValid = true;
 			let condition;
+			console.log(validation, value);
 			switch (validation) {
 				case 'isEmail':
 					condition = field.validate[validation];
@@ -296,6 +297,7 @@ export function writeFieldErrors(
 					condition = field.validate[validation];
 					if (!condition) throw new Error(`maxDate condition not set`);
 					isValid = new Date(value) <= condition;
+					break;
 				default:
 					throw new Error(`Unknown validation type: ${validation}`);
 			}
