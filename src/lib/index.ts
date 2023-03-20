@@ -219,7 +219,6 @@ export function writeFieldErrors(
 		for (const validation of Object.keys(field.validate) as Array<keyof ValidationRules>) {
 			let isValid = true;
 			let condition;
-			console.log(validation, value);
 			switch (validation) {
 				case 'isEmail':
 					condition = field.validate[validation];
