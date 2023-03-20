@@ -296,6 +296,7 @@ export function writeFieldErrors(
 					condition = field.validate[validation];
 					if (!condition) throw new Error(`maxDate condition not set`);
 					isValid = new Date(value) <= condition;
+					break;
 				default:
 					throw new Error(`Unknown validation type: ${validation}`);
 			}
