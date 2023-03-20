@@ -44,3 +44,7 @@ export function countNumberChars(str: string): number {
 
 	return count;
 }
+
+export function isDate(date: any): date is Date {
+	return date instanceof Date && !isNaN(date.valueOf());
+}
