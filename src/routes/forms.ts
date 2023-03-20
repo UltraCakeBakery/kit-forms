@@ -16,13 +16,11 @@ export default create({
 				required: true,
 				label: PasswordLabel,
 				validate: {
-					// minLength: 5
-					// maxLength: 255,
-					// hasLength: true,
-					// hasUppercase: true,
-					// hasLowercase: true,
-					// hasNumbers: true,
-					// hasSpecial: true
+					minLength: 5,
+					hasUppercase: true,
+					hasLowercase: true,
+					hasNumbers: true,
+					hasSpecial: true
 				}
 			},
 			test: {

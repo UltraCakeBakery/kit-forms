@@ -10,6 +10,6 @@ export const actions = forms.createActions({
 			throw fieldError('email', "'jack@gmail.com' is a banned email");
 		}
 
-		throw redirect(303, '/login');
+		throw redirect(303, '/account-details');
 	}
 });
