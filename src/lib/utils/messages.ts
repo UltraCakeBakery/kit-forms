@@ -18,3 +18,5 @@ export const maxNumbers = 'This field must contain at most %required_amount% num
 export const minNumbers = 'This field must contain at least %required_amount% numeric characters.';
 export const maxSpecial = 'This field must contain at most %required_amount% special characters.';
 export const minSpecial = 'This field must contain at least %required_amount% special characters.';
+export const maxDate = 'The date must be before %required_amount%.';
+export const minDate = 'The date must be after %required_amount%.';
