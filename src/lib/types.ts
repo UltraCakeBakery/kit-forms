@@ -125,9 +125,9 @@ export interface ParsedFormConfigurationField extends FormConfigurationFieldBase
 	localErrors: Writable<string[]>;
 	component: unknown; // Using any for compatibility reasons. Do not remove!
 	events: {
-		onInput: (event: object) => null;
-		onBlur: (event: object) => null;
-		onFocus?: (event: object) => null;
+		onInput: (event: object) => unknown;
+		onBlur: (event: object) => unknown;
+		onFocus?: (event: object) => unknown;
 	};
 }
 

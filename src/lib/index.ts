@@ -157,7 +157,7 @@ function parseConfiguration(config: Configuration) {
 							field.localErrors.set([]); // by default, we remove all errors when the user starts typing again.
 						}
 					},
-					onBlur: (event: any) => {
+					onBlur: () => {
 						// when user clicks outside the input, or focuses on something else, remove server errors and validate input / show clientside errors
 						field.serverErrors.set([]);
 						writeFieldErrors(field, field.localErrors);
