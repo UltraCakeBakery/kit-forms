@@ -76,7 +76,7 @@ export interface FormConfigurationFieldBase {
 	label?: unknown;
 	placeholder?: string;
 	description?: string;
-	options?: [{ value: string | number | boolean | null; label: string }];
+	options?: Array<{ value: string | number | boolean | null; label: string }>;
 	errors?: Readable<string[]>;
 	required?: boolean;
 	disabled?: boolean;
@@ -98,7 +98,7 @@ export interface FormConfigurationButton {
 }
 export interface FormConfigurationFieldInput extends FormConfigurationFieldBase {
 	type: HTMLInputTypeAttribute;
-	options?: [{ value: string; label: string }];
+	options?: Array<{ value: string; label: string }>;
 }
 export interface FormConfigurationFieldSelect extends FormConfigurationFieldBase {
 	type: 'select';
