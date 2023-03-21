@@ -1,6 +1,6 @@
 {
 	"name": "kit-forms",
-	"version": "0.9.1",
+	"version": "0.9.3",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -36,16 +36,15 @@
 		"vite": "^4.2.1",
 		"vitest": "^0.29.7"
 	},
+	"license": "MIT",
 	"type": "module",
+	"files": [
+		"dist"
+	],
 	"exports": {
-		"./package.json": "./package.json",
-		"./dist/components/Form.svelte": "./dist/components/Form.svelte",
-		"./dist/components/FormInput.svelte": "./dist/components/FormInput.svelte",
-		".": "./dist/index.js",
-		"./dist/types": "./dist/types.js",
-		"./dist/utils": "./dist/utils/index.js",
-		"./dist/utils/messages": "./dist/utils/messages.js",
-		"./dist/utils/regexes": "./dist/utils/regexes.js"
-	},
-	"svelte": "./dist/index.js"
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js"
+		}
+	}
 }
