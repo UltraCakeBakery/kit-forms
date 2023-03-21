@@ -1,6 +1,6 @@
 {
 	"name": "kit-forms",
-	"version": "0.9.4",
+	"version": "0.9.5",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
