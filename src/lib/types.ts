@@ -43,6 +43,7 @@ export type FormConfigurationField =
 export interface ValidationRules {
 	minLength: number;
 	maxLength: number;
+	isLength: number;
 	hasLength: boolean;
 	maxUppercase: number;
 	minUppercase: number;

@@ -224,6 +224,9 @@ export function writeFieldErrors(
 					condition = field.validate[validation];
 					isValid = condition === true && regexes.email.test(value);
 					break;
+				case 'isLength':
+					isValid = value?.length === condition;
+					break;
 				case 'hasLength':
 					isValid = !value?.length;
 					break;

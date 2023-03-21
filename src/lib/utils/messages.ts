@@ -3,9 +3,10 @@ export const hasLowercase = 'This field must contain at least one lowercase.';
 export const hasUppercase = 'This field must contain at least one uppercase.';
 export const hasNumbers = 'This field must contain at least one numeric character.';
 export const hasSpecial = 'This field must contain at least one special character.';
-export const hasLength = 'This field must be exactly %required_amount% characters long.';
-export const maxLength = 'This field cannot be longer than %required_amount% characters.';
+export const isLength = 'This field must be at least %required_amount% characters long.';
+export const hasLength = 'This field must be filled in.';
 export const minLength = 'This field must be at least %required_amount% characters long.';
+export const maxLength = 'This field cannot be longer than %required_amount% characters.';
 export const maxLowercase =
 	'This field must contain at most %required_amount% lowercase characters.';
 export const minLowercase =
