@@ -102,7 +102,7 @@ export interface FormConfigurationFieldInput extends FormConfigurationFieldBase 
 export interface FormConfigurationFieldSelect extends FormConfigurationFieldBase {
 	type: 'select';
 	readonly?: never;
-	options?: [{ value: string; label: string }];
+	options?: Array<{ value: string; label: string }>;
 }
 export interface FormConfigurationFieldTextarea extends FormConfigurationFieldBase {
 	type: 'textarea';
