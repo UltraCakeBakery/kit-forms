@@ -69,6 +69,7 @@
 				{id}
 				{rows}
 				{readonly}
+				{placeholder}
 				{disabled}
 				{hidden}
 				value={$value}
