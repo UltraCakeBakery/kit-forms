@@ -21,3 +21,5 @@ export const maxSpecial = 'This field must contain at most %required_amount% spe
 export const minSpecial = 'This field must contain at least %required_amount% special characters.';
 export const maxDate = 'The date must be before %required_amount%.';
 export const minDate = 'The date must be after %required_amount%.';
+export const maxTime = 'The time must be before %required_amount%.';
+export const minTime = 'The time must be after %required_amount%.';
