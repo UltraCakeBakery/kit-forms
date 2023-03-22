@@ -330,7 +330,6 @@ export function writeFieldErrors(
 			}
 
 			const amount = isDate(condition) ? condition.toLocaleDateString() : String(condition);
-			console.log(value);
 			if (field.type === 'time' && ['minDate', 'maxDate'].includes(validation) && !isValid) {
 				_errors.push(
 					field.messages?.[validation === 'minDate' ? 'minTime' : 'maxTime']?.replace(
