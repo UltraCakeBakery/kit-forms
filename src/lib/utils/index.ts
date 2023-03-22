@@ -48,3 +48,7 @@ export function countNumberChars(str: string): number {
 export function isDate(date: any): date is Date {
 	return date instanceof Date && !isNaN(date.valueOf());
 }
+
+export function hoursAndMinutesToSeconds(hours: number, minutes: number): number {
+	return hours * 60 * 60 + minutes * 60;
+}
