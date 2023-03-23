@@ -38,9 +38,12 @@ export interface FormConfiguration {
 export type FormConfigurationField =
 	| FormConfigurationFieldInput
 	| FormConfigurationFieldSelect
-	| FormConfigurationFieldTextarea;
+	| FormConfigurationFieldTextarea
+	| FormConfigurationFieldInputRange;
 
 export interface ValidationRules {
+	min: number;
+	max: number;
 	minLength: number;
 	maxLength: number;
 	isLength: number;
@@ -83,6 +86,10 @@ export interface FormConfigurationFieldBase {
 	readonly?: boolean;
 	hidden?: boolean;
 	rows?: number;
+	spellcheck?: boolean;
+	minLength?: number;
+	maxLength?: number;
+	step?: number;
 	pattern?: RegExp;
 	autocomplete?: string | null;
 	id?: string;
@@ -103,11 +110,16 @@ export interface FormConfigurationFieldInput extends FormConfigurationFieldBase 
 export interface FormConfigurationFieldSelect extends FormConfigurationFieldBase {
 	type: 'select';
 	readonly?: never;
+	step?: never;
 	options?: Array<{ value: string; label: string }>;
 }
 export interface FormConfigurationFieldTextarea extends FormConfigurationFieldBase {
 	type: 'textarea';
-	rows?: number;
+	step?: never;
+}
+export interface FormConfigurationFieldInputRange extends FormConfigurationFieldBase {
+	type: 'range';
+	step?: number;
 }
 export interface ParsedFormConfiguration {
 	name: string;

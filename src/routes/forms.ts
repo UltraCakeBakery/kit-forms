@@ -14,6 +14,17 @@ export default create({
 					maxDate: new Date('10/19/2023')
 				}
 			},
+			test2: {
+				type: 'select'
+			},
+			rangee: {
+				type: 'range',
+				step: 1,
+				validate: {
+					min: 0,
+					max: 200
+				}
+			},
 			password: {
 				type: 'password',
 				placeholder: '************',

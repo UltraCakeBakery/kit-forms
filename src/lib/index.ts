@@ -120,6 +120,9 @@ function parseConfiguration(config: Configuration) {
 					required: fieldConfiguration.required,
 					rows: fieldConfiguration.rows,
 					readonly: fieldConfiguration.readonly,
+					minLength: fieldConfiguration.minLength,
+					maxLength: fieldConfiguration.maxLength,
+					step: fieldConfiguration.step,
 					disabled: fieldConfiguration.disabled,
 					hidden: fieldConfiguration.hidden,
 					pattern: fieldConfiguration.pattern
@@ -228,7 +231,7 @@ export function writeFieldErrors(
 					isValid = value?.length === condition;
 					break;
 				case 'hasLength':
-					isValid = !value?.length;
+					isValid = !!value?.length;
 					break;
 				case 'minLength':
 					condition = field.validate[validation] ?? 0;
@@ -237,6 +240,14 @@ export function writeFieldErrors(
 				case 'maxLength':
 					condition = field.validate[validation] ?? Infinity;
 					isValid = value?.length < condition;
+					break;
+				case 'min':
+					condition = field.validate[validation] ?? 0;
+					isValid = Number(value) > condition;
+					break;
+				case 'max':
+					condition = field.validate[validation] ?? Infinity;
+					isValid = Number(value) < condition;
 					break;
 				case 'hasLowercase':
 					isValid = regexes.lowercase.test(value);

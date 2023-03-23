@@ -13,18 +13,20 @@
 	$: label = field.label;
 	$: placeholder = field.placeholder;
 	$: options = field.options || [];
-	$: description = field.description;
-	$: min = type === 'number' ? field.validate?.minLength : undefined;
-	$: max = type === 'number' ? field.validate?.maxLength : undefined;
-	$: minlength = type === 'text' ? field.validate?.minLength : undefined;
-	$: maxlength = type === 'text' ? field.validate?.maxLength : undefined;
+	$: min = field.validate?.min ?? field.validate?.minLength;
+	$: max = field.validate?.max ?? field.validate?.maxLength;
+	$: minlength = field.validate?.minLength;
+	$: maxlength = field.validate?.maxLength;
 	$: required = field.required;
-	$: rows = field.rows;
 	$: readonly = field.readonly;
+	$: rows = field.rows;
+	$: step = field.step;
+	$: spellcheck = field.spellcheck;
 	$: disabled = field.disabled;
 	$: hidden = field.hidden;
 	$: pattern = field.pattern ? field.pattern.toString() : null;
 	$: autocomplete = field.autocomplete;
+	$: description = field.description;
 	$: errorElement = field.errorElement ?? 'div';
 
 	$: localErrors = field.localErrors;
@@ -72,6 +74,7 @@
 				{placeholder}
 				{disabled}
 				{hidden}
+				{spellcheck}
 				value={$value}
 				on:input={registerEvents ? field.events.onInput : null}
 				on:blur={registerEvents ? field.events.onBlur : null}
@@ -92,6 +95,8 @@
 				{pattern}
 				{autocomplete}
 				{readonly}
+				{spellcheck}
+				{step}
 				{disabled}
 				{hidden}
 				on:input={registerEvents ? field.events.onInput : null}
