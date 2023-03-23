@@ -1,6 +1,6 @@
 # kit-forms - ![NPM License](https://img.shields.io/npm/l/kit-forms) [![npm version](https://badge.fury.io/js/kit-forms.svg)](https://badge.fury.io/js/kit-forms) 
 
-Makes dealing with complex `<form>` creation and validation easy.
+Quickly generate secure, progessively enhanced `<form>`'s in your SvelteKit project.
 
 - 🪄 Amazing developer experience due to minimal boilerplate.
 - 🤖 A lot of busy work is done for you, intellegently and quickly.
