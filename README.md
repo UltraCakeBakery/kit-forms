@@ -1,5 +1,3 @@
-> ⚠️ **WARNING**: This library is still in early beta. Not all advertised features have been added yet, and the documentation is incomplete! You have been warned.This notice will be updated once we're close to a 1.0 release candidate.
-
 # kit-forms
 
 Makes dealing with complex `<form>` creation and validation easy.
@@ -8,10 +6,12 @@ Makes dealing with complex `<form>` creation and validation easy.
 - 🤖 A lot of busy work is done for you, intellegently and quickly.
 - 👐🏻 Consistent surface level validation on both client and server side.
 - ⚡ Native browser formvalidation first approach, for maximum compatibility and the best possible user experience.
-- 🦯 Accessible and WCAG compliant default components.
+- 🦯 Accessible and WCAG compliant components out of the box.
+- 🤓 Fully typed using typescript, ~with automatic type declartion generation for action handlers~.
 - 🏃🏻‍♂️ It is the fastest performing form validation library available for SvelteKit.
 - 🚀 Cut your codebase in half and ship pages with forms faster then every before!
-- 🤓 Fully typed using typescript, with automatic type declartion generation for action handlers.
+
+> 🧪 This library is a release-candidate state. Though all advertised features have been added and the documentation is being finalized, minor changes and bugs are still to be expected.
 
 # Prerequisite
 
@@ -26,7 +26,7 @@ You can use your package manager of choice to install this package from npm.
 ```bash
 $: npm install kit-forms --save-dev
 $: pnpm install kit-forms --save-dev
-$: yarn add kit-forms -D // might not work, we have not yet tested this. God speed soldier!
+$: yarn add kit-forms --dev
 ```
 
 # How to use
@@ -48,21 +48,20 @@ export default create({
 		fields: {
 			email: {
 				type: 'email',
+				required: true,
 				placeholder: 'john.doe@example.com',
-				validate: {
-					isEmail: true
-				}
 			},
 			password: {
 				type: 'password',
 				placeholder: '************',
+				required: true,
 				description:
 					'Pick a safe and secure password that has a minimum length of 8 characters, and includes atleast one uppercase, lowercase, number and special character.',
 				validate: {
 					minLength: 8,
-					minLowercase: 1,
-					minUppercase: 1,
-					minNumbers: 10,
+					hasLowercase: true,
+					hasUppercase: true,
+					hasNumbers: true,
 					hasSpecial: true
 				}
 			}
@@ -92,7 +91,7 @@ Import the `forms.js` file into your `+page.server.js`, generate the actions usi
 ```js
 // +page.server.js
 import forms from './forms.js';
-import { fail } from '@sveltejs/kit';
+import { fieldError } from 'kit-forms';
 
 export const actions = forms.createActions({
 	login: async (event, { formData }) => {
@@ -100,14 +99,11 @@ export const actions = forms.createActions({
 
 		// This will throw an error shown below the email field.
 		if (email === 'elon@twitter.com')
-			throw fail(400, { email: 'Only if you give me a free space ride I will let you in.' });
+		{
+			throw fieldError('email', 'Only if you give me a free space ride I will let you in.' );
+		}
 
-		// TODO: actually create the user...
-
-		// if you remove the condition, this would cause a plain error to be shown above the form.
-		if (false) throw fail(404, 'Something went wrong. Please try again later!');
-
-		return 'Login success! Welcome back soldier!';
+		...
 	}
 });
 ```
@@ -120,7 +116,7 @@ The default form component has a `name` attribute. You can use this fact in comb
 
 ```svelte
 <style>
-	:global(form[name='login'] label) {
+	:global(form[name="login"] label) {
 		font-weight: bold;
 	}
 </style>
