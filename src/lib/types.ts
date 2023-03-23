@@ -36,7 +36,10 @@ export interface FormConfiguration {
 }
 
 export type FormConfigurationFieldSet = {
-	[name: string]: FormConfigurationField;
+	legend: string;
+	fields: {
+		[name: string]: FormConfigurationField;
+	};
 };
 
 export type FormConfigurationField =

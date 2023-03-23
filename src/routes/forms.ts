@@ -28,7 +28,6 @@ export default create({
 					type: 'password',
 					placeholder: '************',
 					required: true,
-					label: PasswordLabel,
 					validate: {
 						minLength: 5,
 						hasUppercase: true,

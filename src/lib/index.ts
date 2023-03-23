@@ -99,83 +99,34 @@ export function create(configuration: Configuration): CreatedForms {
  */
 function parseConfiguration(config: Configuration) {
 	const forms = Object.entries(config);
-	
+
 	return forms.map(([formName, formConfiguration]) => {
 		const fields = Object.entries(formConfiguration.fields || {}).map(
-			([name, fieldConfiguration]) => {
-				if (
-					(fieldConfiguration.type as string) === 'button' ||
-					(fieldConfiguration.type as string) === 'submit' ||
-					fieldConfiguration.type === 'reset'
-				) {
-					throw new Error(
-						`fields of type \`${fieldConfiguration.type}\` are not allowed. Please configuration regular <button> elements instead.`
+			([name, fieldConfigurationOrFieldSet]) => {
+				if (name.startsWith('$')) {
+					return {
+						fields: Object.entries(fieldConfigurationOrFieldSet).map(([name, fieldConfiguration]) =>
+							parseConfigurationField(
+								name.slice(1),
+								fieldConfiguration,
+								formName,
+								formConfiguration
+							)
+						)
+					};
+				} else {
+					return parseConfigurationField(
+						name,
+						fieldConfigurationOrFieldSet,
+						formName,
+						formConfiguration
 					);
 				}
-
-				const field = {
-					name,
-					type: fieldConfiguration.type,
-					placeholder: fieldConfiguration.placeholder,
-					description: fieldConfiguration.description,
-					options: fieldConfiguration.options,
-					required: fieldConfiguration.required,
-					rows: fieldConfiguration.rows,
-					readonly: fieldConfiguration.readonly,
-					minLength: fieldConfiguration.minLength,
-					maxLength: fieldConfiguration.maxLength,
-					step: fieldConfiguration.step,
-					disabled: fieldConfiguration.disabled,
-					hidden: fieldConfiguration.hidden,
-					pattern: fieldConfiguration.pattern
-						? fieldConfiguration.pattern.toString().split('/')[1]
-						: null,
-					validate: fieldConfiguration.validate,
-					autocomplete: [false, null].includes(!!fieldConfiguration.autocomplete)
-						? 'off'
-						: fieldConfiguration.autocomplete,
-					id: fieldConfiguration.id ?? `${formName}-${name}`, // default <input id=""> is equal to form name and name of the input.
-					component: fieldConfiguration.component ?? FormInput,
-					label:
-						fieldConfiguration.label === undefined
-							? fieldNameToLabelConverter(name) // if no label has been set by the user in the config, generate our own based on its name
-							: fieldConfiguration.label !== null // if label has not explicitly set to null, use whatever value they have set as the label
-							? fieldConfiguration.label
-							: null, // set no label (hide label) if explicitly passed `null` in config
-					value: writable(fieldConfiguration.value ?? null), // writable stores containing the value of the input
-					localErrors: writable([...((fieldConfiguration.errors as unknown as string[]) || [])]), // writable stores containing the realtime errors in the frontend (client)
-					serverErrors: writable([]), // writable stores containing the errors returned from the actions (server)
-					messages: { ...messages, ...(fieldConfiguration.messages || {}) }
-				} as unknown as ParsedFormConfigurationField; // we cast to unkown to hack around typescript limitations / bad typing due to missing types from svelte
-
-				// generate events you can use inside the Form component
-				field.events = {
-					onInput: (event: any) => {
-						// Using `any` due to the lack of browser event types available here in our node dev env.
-						event?.preventDefault();
-						field.value.set(event.target.value); // write value to store
-						field.serverErrors.set([]); // set server errors to null and rely on validation happening on the client side
-
-						if (formConfiguration.errorsOnInput) {
-							writeFieldErrors(field, field.localErrors); // if user has enabled that errors should display as you are typing, do so.
-						} else {
-							field.localErrors.set([]); // by default, we remove all errors when the user starts typing again.
-						}
-					},
-					onBlur: () => {
-						// when user clicks outside the input, or focuses on something else, remove server errors and validate input / show clientside errors
-						field.serverErrors.set([]);
-						writeFieldErrors(field, field.localErrors);
-					}
-				};
-
-				return field;
 			}
 		);
 
 		const buttons = Object.keys(formConfiguration.buttons || {}).length
 			? Object.entries(formConfiguration.buttons || {}).map(([name, buttonConfiguration]) => {
-					// form buttons configuration. Here we do almost the same thing as for the fields above ^
 					return {
 						name,
 						type: buttonConfiguration.type,
@@ -203,6 +154,81 @@ function parseConfiguration(config: Configuration) {
 
 		return form;
 	}) as unknown as ParsedFormConfiguration[];
+}
+
+function parseConfigurationField(
+	name: string,
+	fieldConfiguration,
+	formName: string,
+	formConfiguration
+) {
+	if (
+		(fieldConfiguration.type as string) === 'button' ||
+		(fieldConfiguration.type as string) === 'submit' ||
+		fieldConfiguration.type === 'reset'
+	) {
+		throw new Error(
+			`fields of type \`${fieldConfiguration.type}\` are not allowed. Please configuration regular <button> elements instead.`
+		);
+	}
+
+	const field = {
+		name,
+		type: fieldConfiguration.type,
+		placeholder: fieldConfiguration.placeholder,
+		description: fieldConfiguration.description,
+		options: fieldConfiguration.options,
+		required: fieldConfiguration.required,
+		rows: fieldConfiguration.rows,
+		readonly: fieldConfiguration.readonly,
+		minLength: fieldConfiguration.minLength,
+		maxLength: fieldConfiguration.maxLength,
+		step: fieldConfiguration.step,
+		disabled: fieldConfiguration.disabled,
+		hidden: fieldConfiguration.hidden,
+		pattern: fieldConfiguration.pattern
+			? fieldConfiguration.pattern.toString().split('/')[1]
+			: null,
+		validate: fieldConfiguration.validate,
+		autocomplete: [false, null].includes(!!fieldConfiguration.autocomplete)
+			? 'off'
+			: fieldConfiguration.autocomplete,
+		id: fieldConfiguration.id ?? `${formName}-${name}`, // default <input id=""> is equal to form name and name of the input.
+		component: fieldConfiguration.component ?? FormInput,
+		label:
+			fieldConfiguration.label === undefined
+				? fieldNameToLabelConverter(name) // if no label has been set by the user in the config, generate our own based on its name
+				: fieldConfiguration.label !== null // if label has not explicitly set to null, use whatever value they have set as the label
+				? fieldConfiguration.label
+				: null, // set no label (hide label) if explicitly passed `null` in config
+		value: writable(fieldConfiguration.value ?? null), // writable stores containing the value of the input
+		localErrors: writable([...((fieldConfiguration.errors as unknown as string[]) || [])]), // writable stores containing the realtime errors in the frontend (client)
+		serverErrors: writable([]), // writable stores containing the errors returned from the actions (server)
+		messages: { ...messages, ...(fieldConfiguration.messages || {}) }
+	} as unknown as ParsedFormConfigurationField; // we cast to unkown to hack around typescript limitations / bad typing due to missing types from svelte
+
+	// generate events you can use inside the Form component
+	field.events = {
+		onInput: (event: any) => {
+			// Using `any` due to the lack of browser event types available here in our node dev env.
+			event?.preventDefault();
+			field.value.set(event.target.value); // write value to store
+			field.serverErrors.set([]); // set server errors to null and rely on validation happening on the client side
+
+			if (formConfiguration.errorsOnInput) {
+				writeFieldErrors(field, field.localErrors); // if user has enabled that errors should display as you are typing, do so.
+			} else {
+				field.localErrors.set([]); // by default, we remove all errors when the user starts typing again.
+			}
+		},
+		onBlur: () => {
+			// when user clicks outside the input, or focuses on something else, remove server errors and validate input / show clientside errors
+			field.serverErrors.set([]);
+			writeFieldErrors(field, field.localErrors);
+		}
+	};
+
+	return field;
 }
 
 /**
@@ -475,9 +501,9 @@ export function getFormElementAttributes(
 	props: { [x: string]: any },
 	parsedFormConfiguration: ParsedFormConfiguration
 ): object {
-	const name = props.name ?? parsedFormConfiguration.name ?? 'default'; // defaults are already decided in the formConfiguration... but we check again just to be sure.
-	const method = props.method ?? parsedFormConfiguration.method ?? 'POST'; // defaults are already decided in the formConfiguration... but we check again just to be sure.
-	const action = props.action ?? parsedFormConfiguration.action ?? `?/${name}`;
+	const name = props.name ?? parsedFormConfiguration.name;
+	const method = props.method ?? parsedFormConfiguration.method;
+	const action = props.action ?? parsedFormConfiguration.action;
 	const id = props.id ?? parsedFormConfiguration.id ?? undefined;
 
 	return { name, method, action, id, class: props.class };

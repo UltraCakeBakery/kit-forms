@@ -8,8 +8,16 @@
 <form {...getFormElementAttributes($$props, form)}>
 	<slot name="above-fields" />
 	<div class="fields">
-		{#each form.fields as field (field.name)}
-			<svelte:component this={field.component} bind:form bind:field />
+		{#each form.fields as fieldOrFieldSet (fieldOrFieldSet.name)}
+			{#if fieldOrFieldSet.fields}
+				<fieldset>
+					{#each fieldOrFieldSet as field (field.name)}
+						<svelte:component this={field.component} bind:form bind:field />
+					{/each}
+				</fieldset>
+			{:else}
+				<svelte:component this={fieldOrFieldSet.component} bind:form bind:field={fieldOrFieldSet} />
+			{/if}
 		{/each}
 	</div>
 	<slot name="below-fields" />
