@@ -1,4 +1,4 @@
-# kit-forms
+# kit-forms - ![NPM License](https://img.shields.io/npm/l/kit-forms) [![npm version](https://badge.fury.io/js/kit-forms.svg)](https://badge.fury.io/js/kit-forms) 
 
 Makes dealing with complex `<form>` creation and validation easy.
 
