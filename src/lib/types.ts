@@ -95,7 +95,7 @@ export interface FormConfigurationFieldBase {
 	id?: string;
 	errorElement?: 'div' | 'ul' | 'ol';
 	validate?: Partial<ValidationRules>;
-	messages?: Partial<Record<keyof ValidationRules, string>>;
+	messages?: Partial<Record<keyof ValidationRules | 'minTime' | 'maxTime', string>>;
 }
 
 export interface FormConfigurationButton {

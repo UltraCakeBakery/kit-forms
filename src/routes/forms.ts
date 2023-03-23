@@ -6,12 +6,12 @@ export default create({
 	login: {
 		fields: {
 			email: {
-				type: 'date',
+				type: 'time',
 				placeholder: 'john.doe@example.com',
 				required: true,
 				validate: {
-					minDate: new Date('03/19/2023'),
-					maxDate: new Date('10/19/2023')
+					minDate: new Date(0, 0, 0, 12, 0),
+					maxDate: new Date(0, 0, 0, 18, 0)
 				}
 			},
 			test2: {

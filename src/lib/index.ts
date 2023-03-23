@@ -20,7 +20,8 @@ import {
 	countLowercaseChars,
 	countUppercaseChars,
 	countNumberChars,
-	isDate
+	isDate,
+	hoursAndMinutesToSeconds
 } from './utils';
 import { browser } from '$app/environment';
 
@@ -304,19 +305,53 @@ export function writeFieldErrors(
 				case 'minDate':
 					condition = field.validate[validation];
 					if (!condition) throw new Error(`minDate condition not set`);
-					isValid = new Date(value) >= condition;
+					switch (field.type) {
+						case 'time':
+							const [hours, minutes] = value.split(':').map(Number);
+							isValid =
+								hoursAndMinutesToSeconds(hours, minutes) >=
+								hoursAndMinutesToSeconds(condition.getHours(), condition.getMinutes());
+							break;
+						case 'date':
+						case 'datetime':
+						case 'datetime-local':
+							isValid = new Date(value) >= condition;
+							break;
+					}
 					break;
 				case 'maxDate':
 					condition = field.validate[validation];
 					if (!condition) throw new Error(`maxDate condition not set`);
-					isValid = new Date(value) <= condition;
+					switch (field.type) {
+						case 'time':
+							const [hours, minutes] = value.split(':').map(Number);
+							isValid =
+								hoursAndMinutesToSeconds(hours, minutes) <=
+								hoursAndMinutesToSeconds(condition.getHours(), condition.getMinutes());
+							break;
+						case 'date':
+						case 'datetime':
+						case 'datetime-local':
+							isValid = new Date(value) <= condition;
+							break;
+					}
 					break;
 				default:
 					throw new Error(`Unknown validation type: ${validation}`);
 			}
 
 			const amount = isDate(condition) ? condition.toLocaleDateString() : String(condition);
-			if (!isValid) {
+			if (field.type === 'time' && ['minDate', 'maxDate'].includes(validation) && !isValid) {
+				_errors.push(
+					field.messages?.[validation === 'minDate' ? 'minTime' : 'maxTime']?.replace(
+						/%required_amount%/g,
+						`${(condition as Date).getHours().toString().padStart(2, '0')}:${(condition as Date)
+							.getMinutes()
+							.toString()
+							.padStart(2, '0')}`
+					) || 'Missing error message for ' + validation
+				); // || defaultMessages.get(validation, condition, field )
+			} else if (!isValid) {
 				_errors.push(
 					field.messages?.[validation]?.replace(/%required_amount%/g, amount) ||
 						'Missing error message for ' + validation
