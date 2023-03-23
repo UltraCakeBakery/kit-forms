@@ -6,38 +6,39 @@ export default create({
 	login: {
 		fields: {
 			email: {
-				type: 'time',
+				type: 'email',
 				placeholder: 'john.doe@example.com',
-				required: true,
-				validate: {
-					minDate: new Date(0, 0, 0, 12, 0),
-					maxDate: new Date(0, 0, 0, 18, 0)
+				required: true
+			},
+			$passwords: {
+				password: {
+					type: 'password',
+					placeholder: '************',
+					required: true,
+					label: PasswordLabel,
+					validate: {
+						minLength: 5,
+						hasUppercase: true,
+						hasLowercase: true,
+						hasNumbers: true,
+						hasSpecial: true
+					}
+				},
+				passwordRepeat: {
+					type: 'password',
+					placeholder: '************',
+					required: true,
+					label: PasswordLabel,
+					validate: {
+						minLength: 5,
+						hasUppercase: true,
+						hasLowercase: true,
+						hasNumbers: true,
+						hasSpecial: true
+					}
 				}
 			},
-			test2: {
-				type: 'select'
-			},
-			rangee: {
-				type: 'range',
-				step: 1,
-				validate: {
-					min: 0,
-					max: 200
-				}
-			},
-			password: {
-				type: 'password',
-				placeholder: '************',
-				required: true,
-				label: PasswordLabel,
-				validate: {
-					minLength: 5,
-					hasUppercase: true,
-					hasLowercase: true,
-					hasNumbers: true,
-					hasSpecial: true
-				}
-			},
+			$banana: {},
 			test: {
 				type: 'select',
 				required: true,

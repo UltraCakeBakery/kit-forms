@@ -99,6 +99,7 @@ export function create(configuration: Configuration): CreatedForms {
  */
 function parseConfiguration(config: Configuration) {
 	const forms = Object.entries(config);
+	
 	return forms.map(([formName, formConfiguration]) => {
 		const fields = Object.entries(formConfiguration.fields || {}).map(
 			([name, fieldConfiguration]) => {

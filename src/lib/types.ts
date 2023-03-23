@@ -31,9 +31,13 @@ export interface FormConfiguration {
 	id?: string;
 	component?: unknown;
 	errorsOnInput?: boolean;
-	fields?: { [name: string]: FormConfigurationField };
+	fields?: { [name: string]: FormConfigurationField | FormConfigurationFieldSet };
 	buttons?: { [name: string]: FormConfigurationButton };
 }
+
+export type FormConfigurationFieldSet = {
+	[name: string]: FormConfigurationField;
+};
 
 export type FormConfigurationField =
 	| FormConfigurationFieldInput
