@@ -17,6 +17,15 @@ Quickly generate secure, progessively enhanced `<form>`'s in your SvelteKit proj
 
 To use this library effectively you need a basic understanding of SvelteKit and its form actions workflow. This library supports edge runtimes and is cross-browser compatible. You can check our supported browsers list and caveats in the apendix of this documentation 
  
+# Introduction
+kit-forms is a library that provides you with a simple API for quickly generating user-friendly, progessively enhanced forms. All generated forms are guaranteed to work when javascript is disabled. When javascript is disabled the forms automatically fallback to native browser formvalidation as much as possible. 
+
+On the serverside kit-forms automatically parses the incoming FormData for you, so you do not need to `await request.formData()`. If any error occures while parsing, kit-forms will handle that error for you. When parsing the FormData is complete, kit-forms will validate the FormData against the exact same validations as the form in the users browser. If there is any discrepancy (which can occure when a user manipulates the form, uses a http client to post dangerous data, etc) kit-forms will automatically throw errors, and display error messages under their corrosponding fields in form. 
+
+TL:DR; When using kit-forms you can quickly generate forms that are fast, safe, secure and a joy to use / write processing backend code for.
+
+NOTE: This library does not offer any stylesheets, css resets or additional validation packages. We leave all of this up to you.
+
 # Installation
 
 You can use your package manager of choice to install this package from npm.
