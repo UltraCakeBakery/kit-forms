@@ -15,10 +15,8 @@ Quickly generate secure, progessively enhanced `<form>`'s in your SvelteKit proj
 
 # Prerequisite
 
-If you have never used SvelteKit before, don't bother reading any furthur until you have read SvelteKit's documentation. We expect that you know how you are expected to deal with forms in SvelteKit without the use of our library, because otherwise you cannot appreciate nor understand this library the way you should.
-
-There is an example project you can use for reference: https://github.com/UltraCakeBakery/kit-forms-example
-
+To use this library effectively you need a basic understanding of SvelteKit and its form actions workflow. This library supports edge runtimes and is cross-browser compatible. You can check our supported browsers list and caveats in the apendix of this documentation 
+ 
 # Installation
 
 You can use your package manager of choice to install this package from npm.
