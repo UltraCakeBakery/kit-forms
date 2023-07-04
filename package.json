@@ -21,7 +21,7 @@
 		"@playwright/test": "^1.31.2",
 		"@sveltejs/adapter-vercel": "^2.4.0",
 		"@sveltejs/package": "^2.0.2",
-		"@typescript-eslint/eslint-plugin": "^5.56.0",
+		"@typescript-eslint/eslint-plugin": "^5.61.0",
 		"@typescript-eslint/parser": "^5.56.0",
 		"@unocss/reset": "^0.51.8",
 		"eslint": "^8.36.0",
