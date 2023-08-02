@@ -34,7 +34,7 @@
 		"typescript": "^5.0.2",
 		"unocss": "^0.51.8",
 		"vite": "^4.2.1",
-		"vitest": "^0.31.0"
+		"vitest": "^0.34.1"
 	},
 	"license": "MIT",
 	"type": "module",
