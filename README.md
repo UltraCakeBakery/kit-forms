@@ -98,9 +98,9 @@ Import the `forms.js` file into the `+layout.svelte` and/or `+page.svelte` compo
 <svelte:component this={forms.login} />
 ```
 
-###### STEP 3/3: Handling Form Submissions on the Server Side (Optional)
+###### STEP 3/3: Handling Form Submissions on the Server Side
 
-Import the `forms.js` file into your `+page.server.js`, generate the actions using the `forms.createActions` helper, and process the form yourself. Remember: all forms have already been validated in the same way they have been in the frontend. It is now up to you to perform any critical security checks that can only take place on the server side:
+Import the `forms.js` file into your `+page.server.js`, generate the actions using the `forms.createActions` helper, and process the automatically validated and parsed form yourself. It is here where you perform additional validations yourself, like critical security checks that can only take place on the server side such as password validation, rate limits, blacklists, etc:
 
 ```js
 // +page.server.js
