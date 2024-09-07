@@ -149,26 +149,17 @@ By default, fields display errors only after they lose focus or when the form ha
 
 Out of the box, we offer a wide range of validation options, with new ones added regularly. This reduces the need to install additional libraries. We even offer helper functions to determine password strength, detect potential spam, and more.
 
-- `minLength: number`
-- `maxLength: number`
-- `hasLength: boolean`
-- `minUppercase: number`
-- `maxUppercase: number`
-- `hasUppercase: boolean`
-- `minLowercase: number`
-- `maxLowercase: number`
-- `hasLowercase: boolean`
-- `minNumbers: number`
-- `maxNumbers: number`
-- `hasNumbers: boolean`
-- `minSpecial: number`
-- `maxSpecial: number`
-- `hasSpecial: boolean`
-- `minRegexMatches: number`
-- `maxRegexMatches: number`
-- `hasRegexMatch: boolean`
-- `isEmail: boolean`
-- `isSame: string`
+### Available validations:
+> ⚠️ This list assumes you are relying on server-side validation. Do not assume these validations to all work together, or when the page is not hydrated. We will update the readme in the near future to better explain. For now, just try around yourself.
+
+| **Type** | **Supported Validations**                                                                                                                                                                      |
+|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **text**       | `minLength`, `maxLength`, `hasLength`, `minUppercase`, `maxUppercase`, `hasUppercase`, `minLowercase`, `maxLowercase`, `hasLowercase`, `minNumbers`, `maxNumbers`, `hasNumbers`, `minSpecial`, `maxSpecial`, `hasSpecial`, `minRegexMatches`, `maxRegexMatches`, `hasRegexMatch`, `isSame` |
+| **password**   | `minLength`, `maxLength`, `hasLength`, `minUppercase`, `maxUppercase`, `hasUppercase`, `minLowercase`, `maxLowercase`, `hasLowercase`, `minNumbers`, `maxNumbers`, `hasNumbers`, `minSpecial`, `maxSpecial`, `hasSpecial`, `minRegexMatches`, `maxRegexMatches`, `hasRegexMatch`, `isSame` |
+| **email**      | `minLength`, `maxLength`, `hasLength`, `minRegexMatches`, `maxRegexMatches`, `hasRegexMatch`, `isEmail`, `isSame`                                                                               |
+| **search**     | `minLength`, `maxLength`, `hasLength`, `minRegexMatches`, `maxRegexMatches`, `hasRegexMatch`, `isSame`                                                                                          |
+| **url**        | `minLength`, `maxLength`, `hasLength`, `minRegexMatches`, `maxRegexMatches`, `hasRegexMatch`, `isSame`                                                                                          |
+| **tel**        | `minLength`, `maxLength`, `hasLength`, `minNumbers`, `maxNumbers`, `hasNumbers`, `minRegexMatches`, `maxRegexMatches`, `hasRegexMatch`, `isSame`                                                |
 
 ### Custom Validations
 
