@@ -139,7 +139,11 @@ Use the browser's inspect element tool to see the wrapper divs, which you can ap
 
 ## Validation
 
-Validation takes place both on the client side and on the server side if you use our enhanced actions. By default, fields only display errors when they lose focus and after the form has been (attempted to be) submitted. You can read more about server-side validation below.
+Validation occurs on both the client and server sides. Initially, native browser validation runs on the client side until SvelteKit fully hydrates the page (i.e., JavaScript has loaded). Once hydration is complete and our form component has mounted, applying our enhanced action to the form will enable client-side JavaScript validation. 
+
+On the server side, if you use the `createActions` helper, it will validate the form before executing the action handler. Any field errors found will be reported to the user, and `request.formData()` will be called and made available for you before proceeding with the action.
+
+By default, fields display errors only after they lose focus or when the form has been (attempted to be) submitted. More information about server-side validation is provided below.
 
 ## Built-in Validation
 
@@ -239,3 +243,8 @@ export default create({
 	}
 });
 ```
+
+## Appendix
+
+###### Supported browsers
+The library is compatible with the same browsers as SvelteKit. For details on specific validation rules, please refer to caniuse.com. By default, our library only applies native attributes.
